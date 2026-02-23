@@ -7,6 +7,7 @@ COPY index.html ./index.html
 COPY login.html ./login.html
 COPY tj.html ./tj.html
 
+
 # Stage 2: Production environment
 FROM node:18-alpine as production
 WORKDIR /app
@@ -23,7 +24,7 @@ COPY db.js ./
 # Copy prepared UI assets into the public directory for the server to serve
 COPY --from=assets-prep /app/index.html ./public/index.html
 COPY --from=assets-prep /app/login.html ./public/login.html
-COPY --from=assets-prep /app/tj.html ./tj.html
+COPY --from=assets-prep /app/tj.html ./public/tj.html
 
 # Create non-root user for production security
 RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001

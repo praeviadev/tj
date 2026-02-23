@@ -16,16 +16,30 @@ services:
       - TZ=America/New_York
     labels:
       - "traefik.enable=true"
-      # Covenant
       - "traefik.http.routers.habit-tracker.rule=Host(`covenant.praeviaintel.com`)"
       - "traefik.http.routers.habit-tracker.entrypoints=websecure"
       - "traefik.http.routers.habit-tracker.tls.certresolver=le"
       - "traefik.http.services.habit-tracker.loadbalancer.server.port=3000"
-      # TJ Academy (same container, separate subdomain)
+
+  tj:
+    build:
+      context: .
+      dockerfile: Dockerfile.tj
+    container_name: tj-academy
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
+    environment:
+      - TZ=America/New_York
+      - TJ_PORT=3001
+    labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.tj-academy.rule=Host(`tj.praeviaintel.com`)"
       - "traefik.http.routers.tj-academy.entrypoints=websecure"
       - "traefik.http.routers.tj-academy.tls.certresolver=le"
-      - "traefik.http.routers.tj-academy.service=habit-tracker"
+      - "traefik.http.services.tj-academy.loadbalancer.server.port=3001"
 
 networks:
   default:
