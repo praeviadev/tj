@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>TJ's Warrior Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Bangers&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --edu: #58a6ff;
+    --fit: #3fb950;
+    --chr: #f0c040;
+    --char: #ff7b72;
+    --resp: #d2a8ff;
+    --accent: #f0c040;
+    --danger: #ff7b72;
+    --success: #3fb950;
+    --radius: 16px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bot: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Nunito', sans-serif; overflow: hidden; }
+
+  /* ── SCREENS ── */
+  .screen { display: none; position: fixed; inset: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding-top: calc(var(--safe-top) + 12px); padding-bottom: calc(var(--safe-bot) + 80px); }
+  .screen.active { display: block; }
+
+
+  /* ── AUTH SCREEN ── */
+  #screen-auth { display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background: radial-gradient(ellipse at 50% 0%, #1a2340 0%, #0d1117 70%); }
+  #screen-auth.active { display:flex; }
+  .auth-logo { font-family:'Bangers',cursive; font-size:52px; color:var(--accent);
+    letter-spacing:3px; text-shadow:0 0 30px rgba(240,192,64,0.4); margin-bottom:4px; }
+  .auth-sub { color:var(--muted); font-size:13px; font-weight:600; margin-bottom:32px; text-align:center; padding:0 24px; }
+  .auth-form { width:100%; max-width:320px; padding:0 24px; display:flex; flex-direction:column; gap:12px; }
+  .auth-input { background:var(--bg2); border:1px solid var(--border); border-radius:14px;
+    padding:16px 18px; font-size:16px; font-family:'Nunito',sans-serif; font-weight:700;
+    color:var(--text); outline:none; transition:border-color 0.2s; width:100%; }
+  .auth-input:focus { border-color:var(--accent); }
+  .auth-error { color:var(--danger); font-size:13px; font-weight:700; text-align:center; min-height:20px; }
+
+  /* ── PIN SCREEN ── */
+  #screen-pin { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at 50% 0%, #1a2340 0%, #0d1117 70%); }
+  #screen-pin.active { display: flex; }
+  .pin-logo { font-family: 'Bangers', cursive; font-size: 52px; color: var(--accent);
+    letter-spacing: 3px; text-shadow: 0 0 30px rgba(240,192,64,0.4); margin-bottom: 8px; }
+  .pin-sub { color: var(--muted); font-size: 14px; font-weight: 600; margin-bottom: 48px; }
+  .pin-dots { display: flex; gap: 16px; margin-bottom: 40px; }
+  .pin-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border);
+    transition: all 0.2s; background: transparent; }
+  .pin-dot.filled { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px rgba(240,192,64,0.5); }
+  .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 280px; }
+  .pin-btn { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+    color: var(--text); font-family: 'Nunito', sans-serif; font-size: 24px; font-weight: 800;
+    padding: 20px; cursor: pointer; transition: all 0.15s; active-scale: 0.95; }
+  .pin-btn:active { background: var(--bg3); transform: scale(0.95); }
+  .pin-btn.del { font-size: 18px; color: var(--muted); }
+  .pin-btn.empty { visibility: hidden; }
+  .pin-error { color: var(--danger); font-size: 13px; font-weight: 700; margin-top: 16px; min-height: 20px; }
+
+  /* ── NAV BAR ── */
+  .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13,17,23,0.95); backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border); display: flex;
+    padding-bottom: var(--safe-bot); }
+  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center;
+    padding: 10px 4px 8px; cursor: pointer; transition: all 0.2s; gap: 4px; }
+  .nav-icon { font-size: 22px; transition: transform 0.2s; }
+  .nav-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .nav-item.active .nav-icon { transform: scale(1.2); }
+  .nav-item.active .nav-label { color: var(--accent); }
+
+  /* ── SHARED COMPONENTS ── */
+  .page-header { padding: 16px 20px 8px; }
+  .page-title { font-family: 'Bangers', cursive; font-size: 32px; color: var(--accent); letter-spacing: 2px; }
+  .page-sub { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin: 0 16px 12px; }
+  .btn { width: 100%; padding: 16px; border: none; border-radius: 14px; font-family: 'Nunito', sans-serif;
+    font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.2s; letter-spacing: .5px; }
+  .btn:active { transform: scale(0.97); }
+  .btn-gold { background: var(--accent); color: #0d1117; }
+  .btn-dark { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+  .btn-danger { background: rgba(255,123,114,0.15); color: var(--danger); border: 1px solid rgba(255,123,114,0.3); }
+  .btn-success { background: rgba(63,185,80,0.15); color: var(--success); border: 1px solid rgba(63,185,80,0.3); }
+  .xp-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 800;
+    padding: 4px 10px; border-radius: 20px; }
+
+  /* ── HOME SCREEN ── */
+  .hero-xp { text-align: center; padding: 24px 20px 16px; }
+  .hero-name { font-size: 16px; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+  .hero-total { font-family: 'Bangers', cursive; font-size: 72px; color: var(--accent);
+    line-height: 1; text-shadow: 0 0 40px rgba(240,192,64,0.3); }
+  .hero-label { font-size: 13px; color: var(--muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .grade-badge { display: inline-block; background: rgba(88,166,255,0.15); border: 1px solid rgba(88,166,255,0.4);
+    color: var(--edu); border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 800; margin-top: 8px; }
+
+  /* Unlock bar */
+  .unlock-card { margin: 0 16px 12px; border-radius: var(--radius); overflow: hidden;
+    background: linear-gradient(135deg, #1a2340, #1a2d1a); border: 1px solid rgba(240,192,64,0.2); }
+  .unlock-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px 8px; }
+  .unlock-title { font-size: 13px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; }
+  .unlock-status { font-size: 12px; font-weight: 800; }
+  .unlock-status.locked { color: var(--danger); }
+  .unlock-status.unlocked { color: var(--success); }
+  .unlock-bar-wrap { padding: 0 16px 14px; }
+  .unlock-bar-bg { background: var(--bg3); border-radius: 8px; height: 10px; overflow: hidden; }
+  .unlock-bar-fill { height: 100%; border-radius: 8px; transition: width 0.6s cubic-bezier(.34,1.56,.64,1);
+    background: linear-gradient(90deg, var(--accent), var(--success)); }
+  .unlock-info { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--muted); font-weight: 700; }
+
+  /* XP category grid */
+  .xp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px 12px; }
+  .xp-cat { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+  .xp-cat-icon { font-size: 24px; margin-bottom: 6px; }
+  .xp-cat-label { font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  .xp-cat-val { font-size: 28px; font-weight: 900; margin-top: 2px; }
+
+  /* Daily tasks */
+  .task-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+    border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+  .task-item:last-child { border-bottom: none; }
+  .task-item:active { background: var(--bg3); }
+  .task-check { width: 24px; height: 24px; border-radius: 8px; border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; font-size: 14px; }
+  .task-check.done { background: var(--success); border-color: var(--success); }
+  .task-info { flex: 1; min-width: 0; }
+  .task-title { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .task-title.done { text-decoration: line-through; color: var(--muted); }
+  .task-xp { font-size: 11px; font-weight: 800; color: var(--success); }
+  .task-arrow { color: var(--muted); font-size: 18px; }
+
+  /* ── LEARN SCREEN ── */
+  .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px 12px; }
+  .subject-card { border-radius: var(--radius); padding: 20px 16px; cursor: pointer;
+    transition: all 0.2s; border: 1px solid transparent; position: relative; overflow: hidden; }
+  .subject-card:active { transform: scale(0.97); }
+  .subject-icon { font-size: 36px; margin-bottom: 10px; }
+  .subject-name { font-size: 15px; font-weight: 800; }
+  .subject-grade { font-size: 11px; opacity: 0.7; margin-top: 2px; font-weight: 600; }
+  .subject-xp { position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: 800;
+    background: rgba(0,0,0,0.3); padding: 3px 8px; border-radius: 10px; }
+
+  /* ── QUIZ SCREEN ── */
+  #screen-quiz { background: var(--bg); padding-bottom: 100px; }
+  .quiz-header { display: flex; align-items: center; gap: 12px; padding: 16px 20px 12px; }
+  .quiz-back { width: 40px; height: 40px; border-radius: 12px; background: var(--bg2);
+    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+    font-size: 20px; cursor: pointer; flex-shrink: 0; }
+  .quiz-subject { font-weight: 800; font-size: 15px; flex: 1; }
+  .quiz-prog { font-size: 12px; color: var(--muted); font-weight: 700; }
+  .quiz-prog-bar { height: 4px; background: var(--bg3); margin: 0 20px 20px; border-radius: 4px; overflow: hidden; }
+  .quiz-prog-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.4s; }
+  .quiz-q-wrap { padding: 0 20px 20px; }
+  .quiz-q-num { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+  .quiz-q-text { font-size: 20px; font-weight: 800; line-height: 1.4; color: var(--text); }
+  .quiz-options { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
+  .quiz-opt { background: var(--bg2); border: 2px solid var(--border); border-radius: 14px;
+    padding: 16px 20px; font-size: 16px; font-weight: 700; cursor: pointer;
+    transition: all 0.2s; text-align: left; color: var(--text); width: 100%; }
+  .quiz-opt:active { transform: scale(0.98); }
+  .quiz-opt.selected { border-color: var(--accent); background: rgba(240,192,64,0.1); }
+  .quiz-opt.correct { border-color: var(--success); background: rgba(63,185,80,0.15); color: var(--success); }
+  .quiz-opt.wrong { border-color: var(--danger); background: rgba(255,123,114,0.1); color: var(--danger); }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-math-input { margin: 0 20px; }
+  .quiz-math-field { width: 100%; background: var(--bg2); border: 2px solid var(--border);
+    border-radius: 14px; padding: 18px 20px; font-size: 24px; font-weight: 800;
+    color: var(--text); font-family: 'Nunito', sans-serif; outline: none; transition: border-color 0.2s; text-align: center; }
+  .quiz-math-field:focus { border-color: var(--accent); }
+  .quiz-feedback { margin: 16px 20px 0; border-radius: 14px; padding: 16px; display: none; }
+  .quiz-feedback.correct { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); }
+  .quiz-feedback.wrong { background: rgba(255,123,114,0.08); border: 1px solid rgba(255,123,114,0.2); }
+  .quiz-feedback-title { font-size: 16px; font-weight: 900; margin-bottom: 4px; }
+  .quiz-feedback-title.correct { color: var(--success); }
+  .quiz-feedback-title.wrong { color: var(--danger); }
+  .quiz-feedback-text { font-size: 14px; color: var(--muted); font-weight: 600; line-height: 1.5; }
+  .quiz-action { padding: 16px 20px 0; }
+  .quiz-loading { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 15px; font-weight: 700; }
+  .quiz-spinner { font-size: 36px; animation: spin 1s linear infinite; display: block; margin-bottom: 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Quiz complete */
+  .quiz-complete { text-align: center; padding: 40px 24px; display: none; }
+  .quiz-complete-icon { font-size: 72px; margin-bottom: 16px; }
+  .quiz-complete-title { font-family: 'Bangers', cursive; font-size: 48px; color: var(--accent); letter-spacing: 2px; }
+  .quiz-complete-xp { font-size: 56px; font-weight: 900; color: var(--success); margin: 8px 0; }
+  .quiz-complete-sub { color: var(--muted); font-size: 14px; font-weight: 700; margin-bottom: 32px; }
+
+  /* ── FITNESS SCREEN ── */
+  .fit-log-area { margin: 0 16px 12px; }
+  .fit-textarea { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px; color: var(--text); font-family: 'Nunito', sans-serif; font-size: 15px;
+    font-weight: 600; resize: none; outline: none; min-height: 120px; line-height: 1.6; }
+  .fit-textarea:focus { border-color: var(--edu); }
+
+  /* ── BIBLE SCREEN ── */
+  .bible-verse-card { margin: 0 16px 12px; background: linear-gradient(135deg, #1a2d1a, #1a2340);
+    border: 1px solid rgba(240,192,64,0.25); border-radius: var(--radius); padding: 20px; }
+  .bible-verse-ref { font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase;
+    letter-spacing: .1em; margin-bottom: 8px; }
+  .bible-verse-text { font-size: 16px; line-height: 1.7; color: var(--text); font-style: italic; font-weight: 600; }
+
+  /* ── REWARDS SCREEN ── */
+  .reward-card { margin: 0 16px 12px; border-radius: var(--radius); overflow: hidden;
+    border: 1px solid var(--border); background: var(--bg2); }
+  .reward-card-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+  .reward-icon { font-size: 32px; }
+  .reward-info { flex: 1; }
+  .reward-name { font-size: 16px; font-weight: 800; }
+  .reward-cost { font-size: 12px; font-weight: 800; color: var(--accent); }
+  .reward-btn { padding: 12px 16px; }
+
+  /* ── XP ANIMATION ── */
+  .xp-float { position: fixed; pointer-events: none; z-index: 9999; font-family: 'Bangers', cursive;
+    font-size: 32px; color: var(--success); text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    animation: floatUp 1.2s ease-out forwards; }
+  @keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-80px) scale(1.3); }
+  }
+  .penalty-float { color: var(--danger); }
+
+  /* ── TOAST ── */
+  #toast { position: fixed; top: calc(var(--safe-top) + 16px); left: 50%; transform: translateX(-50%) translateY(-120px);
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+    padding: 12px 20px; font-size: 14px; font-weight: 700; z-index: 9998;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4); max-width: calc(100vw - 32px); text-align: center; }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── PARENT PANEL ── */
+  #screen-parent { background: var(--bg); }
+  .parent-section { margin: 0 16px 16px; }
+  .parent-section-title { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase;
+    letter-spacing: .1em; margin-bottom: 8px; }
+  .setting-row { display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px 16px; margin-bottom: 8px; }
+  .setting-label { font-size: 14px; font-weight: 700; }
+  .setting-val { font-size: 14px; font-weight: 800; color: var(--accent); }
+  .toggle { width: 44px; height: 26px; background: var(--bg3); border-radius: 13px; position: relative;
+    cursor: pointer; transition: background 0.2s; border: none; flex-shrink: 0; }
+  .toggle.on { background: var(--success); }
+  .toggle::after { content: ''; position: absolute; width: 20px; height: 20px; background: white;
+    border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; }
+  .toggle.on::after { transform: translateX(18px); }
+  input[type="number"].setting-input { background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 16px; padding: 6px 10px; width: 80px; text-align: center; outline: none; }
+
+  /* Penalty buttons */
+  .penalty-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .penalty-btn { background: rgba(255,123,114,0.1); border: 1px solid rgba(255,123,114,0.25);
+    border-radius: 12px; padding: 14px 10px; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .penalty-btn:active { transform: scale(0.96); background: rgba(255,123,114,0.2); }
+  .penalty-label { font-size: 13px; font-weight: 700; color: var(--danger); }
+  .penalty-xp { font-size: 11px; color: var(--muted); font-weight: 700; margin-top: 2px; }
+
+  /* Responsive for iPad */
+  @media (min-width: 768px) {
+    .xp-grid { grid-template-columns: repeat(3, 1fr); }
+    .subject-grid { grid-template-columns: repeat(3, 1fr); }
+    .penalty-grid { grid-template-columns: repeat(3, 1fr); }
+    .quiz-q-text { font-size: 24px; }
+    .quiz-opt { font-size: 18px; }
+    .page-title { font-size: 40px; }
+    .hero-total { font-size: 96px; }
+    .card, .unlock-card, .reward-card { max-width: 600px; margin-left: auto; margin-right: auto; }
+    .xp-grid, .subject-grid, .penalty-grid { max-width: 600px; margin-left: auto; margin-right: auto; padding: 0 0 12px; }
+    .fit-log-area, .bible-verse-card, .parent-section { max-width: 600px; margin-left: auto; margin-right: auto; }
+    .quiz-options, .quiz-q-wrap, .quiz-math-input, .quiz-feedback, .quiz-action { max-width: 600px; margin-left: auto; margin-right: auto; }
+    .quiz-options { padding: 0; }
+    .quiz-q-wrap { padding: 0 0 20px; }
+    .quiz-math-input { margin: 0; }
+    .quiz-feedback { margin: 16px 0 0; }
+    .quiz-action { padding: 16px 0 0; }
+    #screen-quiz { padding-left: calc(50% - 300px); padding-right: calc(50% - 300px); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- AUTH SCREEN (first-time / session expired) -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="screen-auth" class="screen active">
+  <div class="auth-logo">⚔️ TJ ACADEMY</div>
+  <div class="auth-sub" id="auth-sub">Enter the access password</div>
+  <div class="auth-form">
+    <input type="password" class="auth-input" id="auth-password-input" placeholder="Access password"
+      autocomplete="current-password" onkeydown="if(event.key==='Enter')submitAuth()">
+    <button class="btn btn-gold" onclick="submitAuth()">Enter Academy</button>
+    <div class="auth-error" id="auth-error"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PIN SCREEN -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="screen-pin" class="screen">
+  <div class="pin-logo">⚔️ TJ ACADEMY</div>
+  <div class="pin-sub" id="pin-sub-text">Enter your PIN</div>
+  <div class="pin-dots">
+    <div class="pin-dot" id="dot-0"></div>
+    <div class="pin-dot" id="dot-1"></div>
+    <div class="pin-dot" id="dot-2"></div>
+    <div class="pin-dot" id="dot-3"></div>
+  </div>
+  <div class="pin-pad">
+    <button class="pin-btn" onclick="pinPress('1')">1</button>
+    <button class="pin-btn" onclick="pinPress('2')">2</button>
+    <button class="pin-btn" onclick="pinPress('3')">3</button>
+    <button class="pin-btn" onclick="pinPress('4')">4</button>
+    <button class="pin-btn" onclick="pinPress('5')">5</button>
+    <button class="pin-btn" onclick="pinPress('6')">6</button>
+    <button class="pin-btn" onclick="pinPress('7')">7</button>
+    <button class="pin-btn" onclick="pinPress('8')">8</button>
+    <button class="pin-btn" onclick="pinPress('9')">9</button>
+    <button class="pin-btn empty"></button>
+    <button class="pin-btn" onclick="pinPress('0')">0</button>
+    <button class="pin-btn del" onclick="pinDel()">⌫</button>
+  </div>
+  <div class="pin-error" id="pin-error"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- HOME SCREEN -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="screen-home" class="screen">
+  <div class="hero-xp">
+    <div class="hero-name">Good morning, TJ 👊</div>
+    <div class="hero-total" id="home-xp-total">0</div>
+    <div class="hero-label">Total XP</div>
+    <div class="grade-badge" id="home-grade-badge">5th Grade</div>
+  </div>
+
+  <div class="unlock-card">
+    <div class="unlock-header">
+      <div class="unlock-title">🎮 Screen Time Unlock</div>
+      <div class="unlock-status" id="unlock-status">Locked</div>
+    </div>
+    <div class="unlock-bar-wrap">
+      <div class="unlock-bar-bg">
+        <div class="unlock-bar-fill" id="unlock-bar" style="width:0%"></div>
+      </div>
+      <div class="unlock-info">
+        <span id="unlock-progress-text">0 / 500 XP today</span>
+        <span id="unlock-time-text">0 min earned</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="xp-grid">
+    <div class="xp-cat">
+      <div class="xp-cat-icon">📚</div>
+      <div class="xp-cat-label">Education</div>
+      <div class="xp-cat-val" id="xp-edu" style="color:var(--edu)">0</div>
+    </div>
+    <div class="xp-cat">
+      <div class="xp-cat-icon">💪</div>
+      <div class="xp-cat-label">Fitness</div>
+      <div class="xp-cat-val" id="xp-fit" style="color:var(--fit)">0</div>
+    </div>
+    <div class="xp-cat">
+      <div class="xp-cat-icon">✝️</div>
+      <div class="xp-cat-label">Christian</div>
+      <div class="xp-cat-val" id="xp-chr" style="color:var(--chr)">0</div>
+    </div>
+    <div class="xp-cat">
+      <div class="xp-cat-icon">⭐</div>
+      <div class="xp-cat-label">Character</div>
+      <div class="xp-cat-val" id="xp-char" style="color:var(--char)">0</div>
+    </div>
+    <div class="xp-cat">
+      <div class="xp-cat-icon">🤝</div>
+      <div class="xp-cat-label">Social</div>
+      <div class="xp-cat-val" id="xp-social" style="color:#79c0ff">0</div>
+    </div>
+    <div class="xp-cat">
+      <div class="xp-cat-icon">🏠</div>
+      <div class="xp-cat-label">Responsibility</div>
+      <div class="xp-cat-val" id="xp-resp" style="color:var(--resp)">0</div>
+    </div>
+  </div>
+
+  <div class="card" style="padding:0">
+    <div style="padding:14px 16px 10px; font-size:12px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; border-bottom:1px solid var(--border)">
+      Today's Missions
+    </div>
+    <div id="daily-tasks-list">
+      <div style="padding:20px;text-align:center;color:var(--muted);font-size:14px;font-weight:700">Loading missions...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- LEARN SCREEN -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="screen-learn" class="screen">
+  <div class="page-header">
+    <div class="page-title">📚 Learn</div>
+    <div class="page-sub" id="learn-grade-label">5th Grade Subjects</div>
+  </div>
+  <div class="subject-grid" id="subject-grid"></div>
+  <div class="card" style="text-align:center;padding:20px">
+    <div style="font-size:13px;color:var(--muted);font-weight:700">Each session = 10 questions • Instant feedback • Earn XP per correct answer</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- QUIZ SCREEN -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-header">
+    <div class="quiz-back" onclick="exitQuiz()">←</div>
+    <div class="quiz-subject" id="quiz-subject-label">Math</div>
+    <div class="quiz-prog" id="quiz-prog-label">1/10</div>
+  </div>
+  <div class="quiz-prog-bar">
+    <div class="quiz-prog-fill" id="quiz-prog-fill" style="width:0%"></div>
+  </div>
+
+  <!-- Loading state -->
+  <div id="quiz-loading" class="quiz-loading">
+    <span class="quiz-spinner">⚙️</span>
+    Generating your questions...
+  </div>
+
+  <!-- Question -->
+  <div id="quiz-question-wrap" style="display:none">
+    <div class="quiz-q-wrap">
+      <div class="quiz-q-num" id="quiz-q-num">Question 1 of 10</div>
+      <div class="quiz-q-text" id="quiz-q-text"></div>
+    </div>
+    <!-- MCQ Options -->
+    <div class="quiz-options" id="quiz-options"></div>
+    <!-- Math typed input -->
+    <div class="quiz-math-input" id="quiz-math-wrap" style="display:none">
+      <input type="number" class="quiz-math-field" id="quiz-math-field" placeholder="Your answer" inputmode="numeric">
+    </div>
+    <!-- Feedback -->
+    <div class="quiz-feedback" id="quiz-feedback">
+      <div class="quiz-feedback-title" id="quiz-feedback-title"></div>
+      <div class="quiz-feedback-text" id="quiz-feedback-text"></div>
+    </div>
+    <!-- Submit / Next -->
+    <div class="quiz-action">
+      <button class="btn btn-gold" id="quiz-submit-btn" onclick="submitAnswer()" style="display:none">Check Answer ✓</button>
+      <button class="btn btn-dark" id="quiz-next-btn" onclick="nextQuestion()" style="display:none">Next Question →</button>
+    </div>
+  </div>
+
+  <!-- Complete -->
+  <div class="quiz-complete" id="quiz-complete">
+    <div class="quiz-complete-icon" id="quiz-complete-icon">🏆</div>
+    <div class="quiz-complete-title">Mission Complete!</div>
+    <div class="quiz-complete-xp" id="quiz-complete-xp">+0 XP</div>
+    <div class="quiz-complete-sub" id="quiz-complete-sub">0/10 correct</div>
+    <button class="btn btn-gold" onclick="exitQuiz()">Back to Learning →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- FITNESS SCREEN -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="screen-fitness" class="screen">
+  <div class="page-header">
+    <div class="page-title">💪 Fitness</div>
+    <div class="page-sub">Log your workout • Earn XP</div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px;font-weight:800;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em">Today's Activity</div>
+    <div style="display:flex;flex-direction:column;gap:10px" id="fit-challenges">
+      <div class="task-item" style="border-radius:12px;border:1px solid var(--border);padding:12px 14px">
+        <div style="font-size:24px">🏃</div>
+        <div class="task-info">
+          <div class="task-title">20 min outdoor activity</div>
+          <div class="task-xp">+150 XP</div>
+        </div>
+        <button class="btn btn-success" style="width:auto;padding:8px 16px;font-size:13px" onclick="logFitness('outdoor_activity', 150)">Log It</button>
+      </div>
+      <div class="task-item" style="border-radius:12px;border:1px solid var(--border);padding:12px 14px">
+        <div style="font-size:24px">🤸</div>
+        <div class="task-info">
+          <div class="task-title">10 push-ups or sit-ups</div>
+          <div class="task-xp">+100 XP</div>
+        </div>
+        <button class="btn btn-success" style="width:auto;padding:8px 16px;font-size:13px" onclick="logFitness('pushups_situps', 100)">Log It</button>
+      </div>
+      <div class="task-item" style="border-radius:12px;border:1px solid var(--border);padding:12px 14px">
+        <div style="font-size:24px">🚴</div>
+        <div class="task-info">
+          <div class="task-title">Bike ride or walk</div>
+          <div class="task-xp">+125 XP</div>
+        </div>
+        <button class="btn btn-success" style="width:auto;padding:8px 16px;font-size:13px" onclick="logFitness('bike_walk', 125)">Log It</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px;font-weight:800;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em">Log Custom Activity</div>
+    <textarea class="fit-textarea" id="fit-custom-text" placeholder="Describe what you did... (e.g. played basketball for 30 minutes)"></textarea>
+    <button class="btn btn-gold" style="margin-top:10px" onclick="submitFitnessLog()">Submit for XP ⚡</button>
+  </div>
+
+  <div class="card" style="text-align:center">
+    <div style="font-size:28px;font-weight:900;color:var(--fit)" id="fit-xp-today">0</div>
+    <div style="font-size:12px;color:var(--muted);font-weight:700;margin-top:4px">Fitness XP Today</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- BIBLE SCREEN -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="screen-bible" class="screen">
+  <div class="page-header">
+    <div class="page-title">✝️ Word</div>
+    <div class="page-sub">Daily scripture & quiz</div>
+  </div>
+
+  <div class="bible-verse-card" id="bible-verse-card">
+    <div class="bible-verse-ref" id="bible-verse-ref">Loading...</div>
+    <div class="bible-verse-text" id="bible-verse-text">Fetching today's verse...</div>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden">
+    <button class="btn btn-gold" style="border-radius:0;padding:18px" onclick="startBibleQuiz()">
+      📖 Start Bible Quiz (+100-200 XP)
+    </button>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px;font-weight:800;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em">Memorize a Verse</div>
+    <textarea class="fit-textarea" id="memory-verse-input" placeholder="Type the verse from memory..." style="min-height:80px"></textarea>
+    <button class="btn btn-dark" style="margin-top:10px" onclick="submitMemoryVerse()">Submit Memory Verse (+150 XP)</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- REWARDS SCREEN -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="screen-rewards" class="screen">
+  <div class="page-header">
+    <div class="page-title">🎮 Rewards</div>
+    <div class="page-sub">Spend your XP on screen time</div>
+  </div>
+
+  <div class="card" style="text-align:center;background:linear-gradient(135deg,#1a2340,#1a2d1a)">
+    <div style="font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Your XP Bank</div>
+    <div style="font-family:'Bangers',cursive;font-size:64px;color:var(--accent)" id="rewards-xp-total">0</div>
+    <div style="font-size:12px;color:var(--muted);font-weight:700">Available to spend</div>
+  </div>
+
+  <div id="rewards-list"></div>
+
+  <div class="card" style="border-color:rgba(240,192,64,0.3);background:rgba(240,192,64,0.05)">
+    <div style="font-size:13px;font-weight:800;color:var(--accent);margin-bottom:6px">🔓 Today's Unlock Status</div>
+    <div style="font-size:14px;font-weight:700;color:var(--text)" id="rewards-unlock-msg">Keep earning XP to unlock screen time!</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PARENT SCREEN -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="screen-parent" class="screen">
+  <div class="page-header">
+    <div class="page-title">⚙️ Parent</div>
+    <div class="page-sub">Configure TJ's Academy</div>
+  </div>
+
+  <div class="parent-section">
+    <div class="parent-section-title">Account</div>
+    <div class="setting-row">
+      <div class="setting-label">Current Grade</div>
+      <div class="setting-val" id="setting-grade">5th</div>
+    </div>
+    <div class="setting-row">
+      <div class="setting-label">Grade Advance Date</div>
+      <div class="setting-val" id="setting-advance-date">Sept 1</div>
+    </div>
+  </div>
+
+  <div class="parent-section">
+    <div class="parent-section-title">Screen Time Goals</div>
+    <div class="setting-row">
+      <div class="setting-label">Daily XP Goal</div>
+      <input type="number" class="setting-input" id="setting-daily-goal" value="500" min="100" max="2000" onchange="saveSetting('dailyGoal', this.value)">
+    </div>
+    <div class="setting-row">
+      <div class="setting-label">XP per Minute</div>
+      <input type="number" class="setting-input" id="setting-xp-per-min" value="10" min="5" max="50" onchange="saveSetting('xpPerMin', this.value)">
+    </div>
+  </div>
+
+  <div class="parent-section">
+    <div class="parent-section-title">Webhooks</div>
+    <div class="setting-row" style="flex-direction:column;align-items:stretch;gap:8px">
+      <div class="setting-label">n8n Oracle Webhook</div>
+      <input type="url" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-weight:600;font-size:13px;padding:10px 12px;outline:none;width:100%" id="setting-oracle-hook" placeholder="https://n8n.praeviaintel.com/webhook/b7c8d9e0-f1a2-3456-bcde-f01234567890" oninput="saveSetting('oracleHook', this.value)">
+    </div>
+    <div class="setting-row" style="flex-direction:column;align-items:stretch;gap:8px">
+      <div class="setting-label">n8n Todoist Webhook</div>
+      <input type="url" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-weight:600;font-size:13px;padding:10px 12px;outline:none;width:100%" id="setting-todoist-hook" placeholder="https://n8n.praeviaintel.com/webhook/..." oninput="saveSetting('todoistHook', this.value)">
+    </div>
+    <div class="setting-row" style="flex-direction:column;align-items:stretch;gap:8px">
+      <div class="setting-label">n8n Logging Webhook</div>
+      <input type="url" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-weight:600;font-size:13px;padding:10px 12px;outline:none;width:100%" id="setting-log-hook" placeholder="https://n8n.praeviaintel.com/webhook/..." oninput="saveSetting('logHook', this.value)">
+    </div>
+    <div class="setting-row" style="flex-direction:column;align-items:stretch;gap:8px">
+      <div class="setting-label">Todoist Project ID (TJ's tasks)</div>
+      <input type="text" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-weight:600;font-size:13px;padding:10px 12px;outline:none;width:100%" id="setting-todoist-project" placeholder="Project ID from Todoist" oninput="saveSetting('todoistProjectId', this.value)">
+    </div>
+  </div>
+
+  <div class="parent-section">
+    <div class="parent-section-title">Issue Penalty</div>
+    <div class="penalty-grid" id="penalty-grid"></div>
+  </div>
+
+  <div class="parent-section">
+    <div class="parent-section-title">Access Password</div>
+    <div class="setting-row" style="flex-direction:column;align-items:stretch;gap:8px">
+      <div class="setting-label">Web Access Password</div>
+      <div style="display:flex;gap:8px">
+        <input type="password" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-weight:700;font-size:15px;padding:10px 12px;outline:none;flex:1" id="setting-access-pw" placeholder="New password">
+        <button class="btn btn-dark" style="width:auto;padding:10px 16px;font-size:13px" onclick="saveAccessPassword()">Save</button>
+      </div>
+      <div style="font-size:11px;color:var(--muted);font-weight:600">Required once when session expires (every 7 days)</div>
+    </div>
+  </div>
+
+  <div class="parent-section">
+    <div class="parent-section-title">PIN Settings</div>
+    <div class="setting-row">
+      <div class="setting-label">TJ's PIN</div>
+      <div class="setting-val" id="setting-tj-pin">••••</div>
+    </div>
+    <button class="btn btn-dark" style="margin-bottom:8px" onclick="changePin('tj')">Change TJ's PIN</button>
+    <div class="setting-row" style="margin-top:4px">
+      <div class="setting-label">Parent PIN</div>
+      <div class="setting-val">••••</div>
+    </div>
+    <button class="btn btn-dark" onclick="changePin('parent')">Change Parent PIN</button>
+  </div>
+
+  <div class="parent-section">
+    <button class="btn btn-danger" onclick="resetDailyXP()">Reset Today's XP</button>
+  </div>
+</div>
+
+<!-- NAV BAR -->
+<nav class="nav-bar" id="main-nav" style="display:none">
+  <div class="nav-item active" onclick="switchScreen('home')" id="nav-home">
+    <div class="nav-icon">🏠</div>
+    <div class="nav-label">Home</div>
+  </div>
+  <div class="nav-item" onclick="switchScreen('learn')" id="nav-learn">
+    <div class="nav-icon">📚</div>
+    <div class="nav-label">Learn</div>
+  </div>
+  <div class="nav-item" onclick="switchScreen('fitness')" id="nav-fitness">
+    <div class="nav-icon">💪</div>
+    <div class="nav-label">Fitness</div>
+  </div>
+  <div class="nav-item" onclick="switchScreen('bible')" id="nav-bible">
+    <div class="nav-icon">✝️</div>
+    <div class="nav-label">Word</div>
+  </div>
+  <div class="nav-item" onclick="switchScreen('rewards')" id="nav-rewards">
+    <div class="nav-icon">🎮</div>
+    <div class="nav-label">Rewards</div>
+  </div>
+  <div class="nav-item" id="nav-parent" style="display:none" onclick="switchScreen('parent')">
+    <div class="nav-icon">⚙️</div>
+    <div class="nav-label">Parent</div>
+  </div>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// STATE — server is the authority, localStorage is just a token wallet
+// ═══════════════════════════════════════════════════════
+const TOKEN_KEY = 'tj_token_v1';
+const API = ''; // same origin
+
+let state = {
+  gradeYear: 4, gradeAdvanceMonth: 9,
+  xp: { total: 0, edu: 0, fit: 0, chr: 0, char: 0, resp: 0, social: 0 },
+  xpToday: 0, todayDate: '', completedToday: [],
+  settings: { dailyGoal: 500, xpPerMin: 10, oracleHook: '', todoistHook: '', logHook: '', todoistProjectId: '' }
+};
+let sessionToken = localStorage.getItem(TOKEN_KEY) || null;
+let sessionIsParent = false;
+
+let pinBuffer = '';
+let pinMode = 'tj';
+let pinChangeStep = 0;
+let pinChangeNew = '';
+let currentScreen = 'pin';
+let quizData = { questions: [], idx: 0, score: 0, xpEarned: 0, subject: '', type: 'mcq' };
+let selectedOption = null;
+let passwordAccepted = false;
+
+function getAuthHeaders() {
+  return { 'Content-Type': 'application/json', 'x-tj-token': sessionToken || '' };
+}
+async function apiGet(path) {
+  const res = await fetch(API + path, { headers: getAuthHeaders() });
+  return res.json();
+}
+async function apiPost(path, body) {
+  const res = await fetch(API + path, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(body) });
+  return res.json();
+}
+async function loadStateFromServer() {
+  try {
+    const data = await apiGet('/api/tj/state');
+    if (data.ok) { state = data.state; updateUI(); }
+    return data.ok;
+  } catch(e) { logError('load_state', e.message); return false; }
+}
+function checkDailyReset() {} // server handles it
+function checkGradeAdvance() {} // server handles it
+function saveState() {} // server is the authority
+
+async function saveSetting(key, value) {
+  const val = (key === 'dailyGoal' || key === 'xpPerMin') ? Number(value) : value;
+  state.settings[key] = val;
+  updateUI();
+  try {
+    const data = await apiPost('/api/tj/settings', { [key]: val });
+    if (data.ok) state = data.state;
+  } catch(e) { logError('save_setting', e.message); }
+}
+// ═══════════════════════════════════════════════════════
+// LOGGING — all events route through server
+// ═══════════════════════════════════════════════════════
+async function logToN8n(event, payload) {
+  try {
+    await fetch(API + '/api/tj/log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-tj-token': sessionToken || '' },
+      body: JSON.stringify({ event, payload })
+    });
+  } catch(e) { console.warn('[log]', e.message); }
+}
+function logError(context, message) {
+  console.error('[tj/' + context + ']', message);
+  logToN8n('error_' + context, { message });
+}
+// ═══════════════════════════════════════════════════════
+// SESSION MANAGEMENT — token lives in localStorage, validated server-side
+// ═══════════════════════════════════════════════════════
+function isSessionValid() { return !!sessionToken; }
+function clearSession() { sessionToken = null; localStorage.removeItem(TOKEN_KEY); }
+
+async function submitAuth() {
+  const input = document.getElementById('auth-password-input');
+  const pw = input.value.trim();
+  const errEl = document.getElementById('auth-error');
+  if (!pw) return;
+  const btn = document.querySelector('#screen-auth .btn-gold');
+  btn.textContent = 'Checking...'; btn.disabled = true;
+  try {
+    const data = await fetch(API + '/api/tj/auth', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw })
+    }).then(r => r.json());
+    if (data.ok && data.passwordAccepted) {
+      passwordAccepted = true;
+      errEl.textContent = '';
+      input.value = '';
+      pinMode = 'tj';
+      document.getElementById('pin-sub-text').textContent = 'Enter your PIN';
+      switchScreenRaw('pin');
+    } else {
+      errEl.textContent = 'Wrong password. Try again.';
+      input.value = ''; input.focus();
+      setTimeout(() => errEl.textContent = '', 3000);
+    }
+  } catch(e) {
+    errEl.textContent = 'Server unreachable. Try again.';
+    logError('auth_submit', e.message);
+  }
+  btn.textContent = 'Enter Academy'; btn.disabled = false;
+}
+// ═══════════════════════════════════════════════════════
+// PIN
+// ═══════════════════════════════════════════════════════
+function pinPress(digit) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += digit;
+  updatePinDots();
+  if (pinBuffer.length === 4) setTimeout(evaluatePin, 150);
+}
+
+function pinDel() {
+  pinBuffer = pinBuffer.slice(0, -1);
+  updatePinDots();
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById(`dot-${i}`).classList.toggle('filled', i < pinBuffer.length);
+  }
+}
+
+async function evaluatePin() {
+  const sub = document.getElementById('pin-sub-text');
+  if (pinMode === 'tj') {
+    if (!passwordAccepted && !sessionToken) {
+      showPinError('Enter access password first.'); pinBuffer = ''; updatePinDots(); return;
+    }
+    try {
+      const data = await fetch(API + '/api/tj/pin', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: pinBuffer })
+      }).then(r => r.json());
+      if (data.ok) {
+        sessionToken = data.token;
+        sessionIsParent = data.isParent;
+        localStorage.setItem(TOKEN_KEY, data.token);
+        passwordAccepted = false;
+        await enterApp(data.isParent);
+      } else {
+        showPinError('Wrong PIN. Try again.');
+      }
+    } catch(e) {
+      showPinError('Server error. Try again.');
+      logError('pin_eval', e.message);
+    }
+  } else if (pinMode === 'change_tj' || pinMode === 'change_parent') {
+    if (pinChangeStep === 0) {
+      pinChangeNew = pinBuffer; pinBuffer = ''; updatePinDots();
+      sub.textContent = 'Confirm new PIN'; pinChangeStep = 1;
+    } else {
+      if (pinBuffer === pinChangeNew) {
+        const key = pinMode === 'change_tj' ? 'tjPin' : 'parentPin';
+        const data = await apiPost('/api/tj/settings', { [key]: pinBuffer });
+        if (data.ok) state = data.state;
+        showToast('PIN updated! ✓');
+        pinMode = 'tj'; pinChangeStep = 0;
+        document.getElementById('pin-sub-text').textContent = 'Enter your PIN';
+        await enterApp(currentScreen === 'parent');
+      } else {
+        showPinError("PINs don't match."); pinChangeStep = 0; sub.textContent = 'Enter new PIN';
+      }
+    }
+  }
+  pinBuffer = ''; updatePinDots();
+}
+function showPinError(msg) {
+  document.getElementById('pin-error').textContent = msg;
+  setTimeout(() => document.getElementById('pin-error').textContent = '', 2000);
+}
+
+async function enterApp(isParent) {
+  document.getElementById('main-nav').style.display = 'flex';
+  document.getElementById('nav-parent').style.display = isParent ? 'flex' : 'none';
+  await loadStateFromServer();
+  if (isParent) switchScreen('parent');
+  else switchScreen('home');
+  loadTodayTasks();
+  loadDailyVerse();
+  updateUI();
+}
+function changePin(who) {
+  pinMode = `change_${who}`;
+  pinChangeStep = 0;
+  pinChangeNew = '';
+  pinBuffer = '';
+  updatePinDots();
+  document.getElementById('pin-sub-text').textContent = `Enter new ${who === 'tj' ? "TJ's" : 'Parent'} PIN`;
+  switchScreenRaw('pin');
+}
+
+// ═══════════════════════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════════════════════
+function switchScreen(name) {
+  if (name === 'quiz') return;
+  currentScreen = name;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${name}`).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const nav = document.getElementById(`nav-${name}`);
+  if (nav) nav.classList.add('active');
+  if (name !== 'pin') document.getElementById('main-nav').style.display = 'flex';
+  if (name === 'rewards') updateRewards();
+  if (name === 'parent') populateParentSettings();
+}
+
+function switchScreenRaw(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${name}`).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// XP — optimistic UI update, then confirm with server
+// ═══════════════════════════════════════════════════════
+async function addXP(amount, category, reason) {
+  state.xp.total += amount;
+  state.xp[category] = (state.xp[category] || 0) + amount;
+  state.xpToday += amount;
+  updateUI(); floatXP(amount);
+  try {
+    const data = await apiPost('/api/tj/xp', { amount, category, reason });
+    if (data.ok) { state = data.state; updateUI(); }
+  } catch(e) { logError('add_xp', e.message); }
+}
+
+async function penalizeXP(amount, reason) {
+  state.xp.total = Math.max(0, state.xp.total - amount);
+  state.xpToday  = Math.max(0, state.xpToday - amount);
+  updateUI(); floatXP(-amount);
+  showToast('-' + amount + ' XP: ' + reason);
+  try {
+    const data = await apiPost('/api/tj/penalty', { amount, reason });
+    if (data.ok) { state = data.state; updateUI(); }
+  } catch(e) { logError('penalty_xp', e.message); }
+}
+// ═══════════════════════════════════════════════════════
+// UI UPDATE
+// ═══════════════════════════════════════════════════════
+function updateUI() {
+  const g = state.gradeYear;
+  const suffix = g === 1 ? 'st' : g === 2 ? 'nd' : g === 3 ? 'rd' : 'th';
+  const gradeLabel = `${g}${suffix} Grade`;
+  document.getElementById('home-xp-total').textContent = state.xp.total.toLocaleString();
+  document.getElementById('home-grade-badge').textContent = gradeLabel;
+  document.getElementById('learn-grade-label').textContent = `${gradeLabel} Subjects`;
+  document.getElementById('xp-edu').textContent = (state.xp.edu || 0).toLocaleString();
+  document.getElementById('xp-fit').textContent = (state.xp.fit || 0).toLocaleString();
+  document.getElementById('xp-chr').textContent = (state.xp.chr || 0).toLocaleString();
+  document.getElementById('xp-char').textContent = (state.xp.char || 0).toLocaleString();
+  document.getElementById('xp-social').textContent = (state.xp.social || 0).toLocaleString();
+  document.getElementById('xp-resp').textContent = (state.xp.resp || 0).toLocaleString();
+  document.getElementById('rewards-xp-total').textContent = state.xp.total.toLocaleString();
+  document.getElementById('fit-xp-today').textContent = (state.xp.fit || 0).toLocaleString();
+  document.getElementById('setting-grade').textContent = `${g}${suffix}`;
+
+  // Unlock bar
+  const goal = state.settings.dailyGoal || 500;
+  const pct = Math.min(100, (state.xpToday / goal) * 100);
+  const unlocked = state.xpToday >= goal;
+  document.getElementById('unlock-bar').style.width = pct + '%';
+  document.getElementById('unlock-progress-text').textContent = `${state.xpToday.toLocaleString()} / ${goal.toLocaleString()} XP today`;
+  const minutes = Math.floor(state.xpToday / (state.settings.xpPerMin || 10));
+  document.getElementById('unlock-time-text').textContent = `${minutes} min earned`;
+  const statusEl = document.getElementById('unlock-status');
+  statusEl.textContent = unlocked ? '🔓 UNLOCKED' : '🔒 Locked';
+  statusEl.className = 'unlock-status ' + (unlocked ? 'unlocked' : 'locked');
+  const rewardMsg = document.getElementById('rewards-unlock-msg');
+  if (rewardMsg) rewardMsg.textContent = unlocked
+    ? `🔓 Screen time unlocked! You earned ${minutes} minutes today.`
+    : `Earn ${goal - state.xpToday} more XP to unlock screen time.`;
+}
+
+// ═══════════════════════════════════════════════════════
+// SUBJECTS
+// ═══════════════════════════════════════════════════════
+const SUBJECTS = [
+  { id: 'math',    label: 'Math',              icon: '➕', color: '#58a6ff', bg: 'rgba(88,166,255,0.1)',  type: 'math',  xpPer: 20 },
+  { id: 'ela',     label: 'English & ELA',     icon: '📝', color: '#d2a8ff', bg: 'rgba(210,168,255,0.1)', type: 'mcq',   xpPer: 15 },
+  { id: 'social',  label: 'Social Studies',    icon: '🌎', color: '#3fb950', bg: 'rgba(63,185,80,0.1)',   type: 'mcq',   xpPer: 15 },
+  { id: 'science', label: 'Science',           icon: '🔬', color: '#f0c040', bg: 'rgba(240,192,64,0.1)',  type: 'mcq',   xpPer: 15 },
+  { id: 'bible',   label: 'Bible Study',       icon: '✝️', color: '#ff7b72', bg: 'rgba(255,123,114,0.1)', type: 'mcq',   xpPer: 20 },
+  { id: 'reading', label: 'Reading',           icon: '📖', color: '#ffa657', bg: 'rgba(255,166,87,0.1)',  type: 'mcq',   xpPer: 15 },
+];
+
+function renderSubjects() {
+  const grid = document.getElementById('subject-grid');
+  const g = state.gradeYear;
+  grid.innerHTML = SUBJECTS.map(s => `
+    <div class="subject-card" style="background:${s.bg};border-color:${s.color}30" onclick="startSubjectQuiz('${s.id}')">
+      <div class="subject-xp" style="color:${s.color}">+${s.xpPer} XP/✓</div>
+      <div class="subject-icon">${s.icon}</div>
+      <div class="subject-name" style="color:${s.color}">${s.label}</div>
+      <div class="subject-grade">Grade ${g} level</div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// QUIZ ENGINE
+// ═══════════════════════════════════════════════════════
+async function startSubjectQuiz(subjectId) {
+  const subj = SUBJECTS.find(s => s.id === subjectId);
+  if (!subj) return;
+  const hook = state.settings.oracleHook;
+  if (!hook) { showToast('Set Oracle Webhook in Parent settings'); return; }
+  quizData = { questions: [], idx: 0, score: 0, xpEarned: 0, subject: subj, type: subj.type };
+  selectedOption = null;
+  document.getElementById('quiz-loading').style.display = 'block';
+  document.getElementById('quiz-question-wrap').style.display = 'none';
+  document.getElementById('quiz-complete').style.display = 'none';
+  document.getElementById('quiz-subject-label').textContent = `${subj.icon} ${subj.label}`;
+  document.getElementById('quiz-prog-label').textContent = '...';
+  switchScreenRaw('quiz');
+  document.getElementById('main-nav').style.display = 'none';
+
+  try {
+    const res = await fetch(hook, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'tj_quiz',
+        subject: subjectId,
+        grade: state.gradeYear,
+        count: 10,
+        type: subj.type
+      })
+    });
+    const raw = await res.json();
+    const questions = parseQuizResponse(raw, subj.type);
+    if (!questions || !questions.length) throw new Error('No questions returned');
+    quizData.questions = questions;
+    document.getElementById('quiz-loading').style.display = 'none';
+    document.getElementById('quiz-question-wrap').style.display = 'block';
+    renderQuestion();
+  } catch(e) {
+    logToN8n('quiz_error', { subject: subjectId, error: e.message });
+    document.getElementById('quiz-loading').innerHTML = `<div style="color:var(--danger);font-size:15px;font-weight:700">⚠️ Couldn't load questions.<br>Check your Oracle webhook.</div>`;
+  }
+}
+
+function parseQuizResponse(raw, type) {
+  function drill(d) {
+    if (!d) return null;
+    if (Array.isArray(d)) {
+      if (d.length && d[0].q) return d;
+      for (const item of d) { const r = drill(item); if (r) return r; }
+    }
+    if (typeof d === 'object') {
+      if (d.questions && Array.isArray(d.questions) && d.questions[0]?.q) return d.questions;
+      if (d.output && Array.isArray(d.output) && d.output[0]?.q) return d.output;
+      for (const k in d) { const r = drill(d[k]); if (r) return r; }
+    }
+    return null;
+  }
+  return drill(raw);
+}
+
+function renderQuestion() {
+  const q = quizData.questions[quizData.idx];
+  const total = quizData.questions.length;
+  const current = quizData.idx + 1;
+  selectedOption = null;
+  document.getElementById('quiz-q-num').textContent = `Question ${current} of ${total}`;
+  document.getElementById('quiz-q-text').textContent = q.q;
+  document.getElementById('quiz-prog-label').textContent = `${current}/${total}`;
+  document.getElementById('quiz-prog-fill').style.width = ((current - 1) / total * 100) + '%';
+  document.getElementById('quiz-feedback').style.display = 'none';
+  document.getElementById('quiz-next-btn').style.display = 'none';
+
+  const isMath = quizData.type === 'math' && (!q.options || q.options.length === 0);
+  document.getElementById('quiz-options').style.display = isMath ? 'none' : 'flex';
+  document.getElementById('quiz-math-wrap').style.display = isMath ? 'block' : 'none';
+  document.getElementById('quiz-submit-btn').style.display = isMath ? 'block' : 'none';
+
+  if (isMath) {
+    const field = document.getElementById('quiz-math-field');
+    field.value = '';
+    setTimeout(() => field.focus(), 300);
+  } else {
+    const opts = document.getElementById('quiz-options');
+    opts.innerHTML = (q.options || []).map((opt, i) => `
+      <button class="quiz-opt" onclick="selectOption(${i}, this)">${String.fromCharCode(65+i)}. ${opt}</button>
+    `).join('');
+    document.getElementById('quiz-submit-btn').style.display = 'none';
+  }
+}
+
+function selectOption(idx, el) {
+  if (el.disabled) return;
+  document.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedOption = idx;
+  document.getElementById('quiz-submit-btn').style.display = 'block';
+}
+
+function submitAnswer() {
+  const q = quizData.questions[quizData.idx];
+  const isMath = quizData.type === 'math' && (!q.options || q.options.length === 0);
+  let isCorrect = false;
+
+  if (isMath) {
+    const userVal = parseFloat(document.getElementById('quiz-math-field').value);
+    const correctVal = parseFloat(q.correct ?? q.answer);
+    isCorrect = Math.abs(userVal - correctVal) < 0.01;
+  } else {
+    if (selectedOption === null) { showToast('Pick an answer first!'); return; }
+    isCorrect = selectedOption === q.correct;
+  }
+
+  // Disable inputs
+  document.querySelectorAll('.quiz-opt').forEach((o, i) => {
+    o.disabled = true;
+    if (i === q.correct) o.classList.add('correct');
+    else if (i === selectedOption && !isCorrect) o.classList.add('wrong');
+  });
+  document.getElementById('quiz-math-field').disabled = true;
+  document.getElementById('quiz-submit-btn').style.display = 'none';
+
+  // Feedback
+  const fb = document.getElementById('quiz-feedback');
+  const fbt = document.getElementById('quiz-feedback-title');
+  const fbx = document.getElementById('quiz-feedback-text');
+  fb.style.display = 'block';
+
+  if (isCorrect) {
+    quizData.score++;
+    quizData.xpEarned += quizData.subject.xpPer;
+    fbt.textContent = '✓ Correct! +' + quizData.subject.xpPer + ' XP';
+    fbt.className = 'quiz-feedback-title correct';
+    fb.className = 'quiz-feedback correct';
+    fbx.textContent = q.rationale || 'Great job!';
+    floatXP(quizData.subject.xpPer);
+  } else {
+    fbt.textContent = '✗ Not quite';
+    fbt.className = 'quiz-feedback-title wrong';
+    fb.className = 'quiz-feedback wrong';
+    const correctAns = isMath ? q.correct : (q.options?.[q.correct] || '');
+    fbx.textContent = `Correct answer: ${correctAns}. ${q.rationale || ''}`;
+  }
+
+  document.getElementById('quiz-next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+  quizData.idx++;
+  if (quizData.idx >= quizData.questions.length) {
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+}
+
+function finishQuiz() {
+  const total = quizData.questions.length;
+  const xp = quizData.xpEarned;
+  addXP(xp, 'edu', quizData.subject.label);
+  document.getElementById('quiz-question-wrap').style.display = 'none';
+  const complete = document.getElementById('quiz-complete');
+  complete.style.display = 'block';
+  document.getElementById('quiz-complete-icon').textContent = quizData.score >= total * 0.8 ? '🏆' : quizData.score >= total * 0.5 ? '⭐' : '💪';
+  document.getElementById('quiz-complete-xp').textContent = `+${xp} XP`;
+  document.getElementById('quiz-complete-sub').textContent = `${quizData.score}/${total} correct`;
+  logToN8n('quiz_complete', { subject: quizData.subject.id, score: quizData.score, total, xp });
+}
+
+function exitQuiz() {
+  document.getElementById('main-nav').style.display = 'flex';
+  switchScreen('learn');
+}
+
+// ═══════════════════════════════════════════════════════
+// BIBLE
+// ═══════════════════════════════════════════════════════
+async function startBibleQuiz() { await startSubjectQuiz('bible'); }
+
+async function loadDailyVerse() {
+  // Simple rotating verse based on day of year
+  const verses = [
+    { ref: 'Philippians 4:13', text: 'I can do all things through Christ who strengthens me.' },
+    { ref: 'Joshua 1:9', text: 'Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.' },
+    { ref: 'Proverbs 3:5-6', text: 'Trust in the Lord with all your heart and lean not on your own understanding.' },
+    { ref: 'Psalm 23:1', text: 'The Lord is my shepherd; I shall not want.' },
+    { ref: 'Romans 8:28', text: 'And we know that in all things God works for the good of those who love him.' },
+    { ref: '2 Timothy 1:7', text: 'For God has not given us a spirit of fear, but of power and of love and of a sound mind.' },
+    { ref: 'Matthew 5:16', text: 'Let your light shine before others, that they may see your good deeds and glorify your Father in heaven.' },
+  ];
+  const idx = Math.floor(Date.now() / 86400000) % verses.length;
+  const verse = verses[idx];
+  document.getElementById('bible-verse-ref').textContent = verse.ref;
+  document.getElementById('bible-verse-text').textContent = verse.text;
+}
+
+async function submitMemoryVerse() {
+  const input = document.getElementById('memory-verse-input');
+  const text = input.value.trim();
+  if (!text || text.length < 10) { showToast('Type out the verse first!'); return; }
+  addXP(150, 'chr', 'Memory Verse');
+  input.value = '';
+  showToast('Memory verse submitted! +150 XP ✝️');
+  logToN8n('memory_verse', { text: text.slice(0, 100) });
+}
+
+// ═══════════════════════════════════════════════════════
+// FITNESS
+// ═══════════════════════════════════════════════════════
+const fitLoggedToday = new Set();
+
+function logFitness(type, xp) {
+  if (fitLoggedToday.has(type)) { showToast('Already logged today!'); return; }
+  fitLoggedToday.add(type);
+  addXP(xp, 'fit', type);
+  showToast(`💪 Logged! +${xp} XP`);
+  logToN8n('fitness_log', { type, xp });
+}
+
+async function submitFitnessLog() {
+  const text = document.getElementById('fit-custom-text').value.trim();
+  if (!text || text.length < 5) { showToast('Describe your activity first!'); return; }
+  const hook = state.settings.oracleHook;
+  if (!hook) { addXP(75, 'fit', 'custom activity'); showToast('+75 XP! (Set Oracle for AI scoring)'); return; }
+  showToast('Scoring your workout...');
+  try {
+    const res = await fetch(hook, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'tj_fitness', log: text, grade: state.gradeYear })
+    });
+    const data = await res.json();
+    const xp = parseInt(data?.xp || data?.output?.xp || 75);
+    const reply = data?.reply || data?.output?.reply || 'Activity logged!';
+    addXP(Math.max(0, xp), 'fit', 'custom activity');
+    document.getElementById('fit-custom-text').value = '';
+    showToast(`${reply} +${xp} XP`);
+  } catch(e) {
+    logToN8n('fitness_error', { error: e.message });
+    addXP(50, 'fit', 'custom activity');
+    showToast('+50 XP! Keep it up 💪');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// DAILY TASKS (from Todoist via n8n)
+// ═══════════════════════════════════════════════════════
+let dailyTasks = [];
+
+async function loadTodayTasks() {
+  const hook = state.settings.todoistHook;
+  const list = document.getElementById('daily-tasks-list');
+  if (!hook) {
+    list.innerHTML = `<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px;font-weight:700">Set Todoist webhook in Parent settings to load missions</div>`;
+    return;
+  }
+  try {
+    const res = await fetch(hook, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'get_tj_tasks', projectId: state.settings.todoistProjectId })
+    });
+    const data = await res.json();
+    dailyTasks = (data.tasks || data.output?.tasks || []).slice(0, 10);
+    renderDailyTasks();
+  } catch(e) {
+    logToN8n('todoist_error', { error: e.message });
+    list.innerHTML = `<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px;font-weight:700">Couldn't load tasks. Check Todoist webhook.</div>`;
+  }
+}
+
+function renderDailyTasks() {
+  const list = document.getElementById('daily-tasks-list');
+  if (!dailyTasks.length) {
+    list.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:14px;font-weight:700">No missions today. Check back later!</div>`;
+    return;
+  }
+  list.innerHTML = dailyTasks.map((t, i) => {
+    const done = state.completedToday.includes(t.id || i);
+    return `<div class="task-item" onclick="completeTask(${i})">
+      <div class="task-check ${done ? 'done' : ''}">${done ? '✓' : ''}</div>
+      <div class="task-info">
+        <div class="task-title ${done ? 'done' : ''}">${t.content || t.title || t.t || 'Task'}</div>
+        <div class="task-xp">+${t.xp || 50} XP</div>
+      </div>
+      <div class="task-arrow">${done ? '' : '›'}</div>
+    </div>`;
+  }).join('');
+}
+
+async function completeTask(idx) {
+  const t = dailyTasks[idx];
+  const id = String(t.id || idx);
+  if ((state.completedToday || []).includes(id)) return;
+  if (!state.completedToday) state.completedToday = [];
+  state.completedToday.push(id); // optimistic
+  renderDailyTasks();
+  try {
+    const data = await apiPost('/api/tj/task/complete', { taskId: id, taskTitle: t.content || t.t, xp: t.xp || 50 });
+    if (data.ok) { state = data.state; updateUI(); renderDailyTasks(); }
+  } catch(e) { logError('task_complete', e.message); }
+}
+// ═══════════════════════════════════════════════════════
+// REWARDS
+// ═══════════════════════════════════════════════════════
+const REWARDS = [
+  { id: 'phone_30', icon: '📱', name: '30 min phone time', cost: 300 },
+  { id: 'game_60', icon: '🎮', name: '1 hour game time', cost: 500 },
+  { id: 'game_120', icon: '🕹️', name: '2 hours game time', cost: 900 },
+  { id: 'movie', icon: '🎬', name: 'Movie night pick', cost: 1500 },
+  { id: 'treat', icon: '🍕', name: 'Special food treat', cost: 800 },
+];
+
+function updateRewards() {
+  const list = document.getElementById('rewards-list');
+  list.innerHTML = REWARDS.map(r => {
+    const canAfford = state.xp.total >= r.cost;
+    return `<div class="reward-card">
+      <div class="reward-card-header">
+        <div class="reward-icon">${r.icon}</div>
+        <div class="reward-info">
+          <div class="reward-name">${r.name}</div>
+          <div class="reward-cost">${r.cost.toLocaleString()} XP</div>
+        </div>
+      </div>
+      <div class="reward-btn">
+        <button class="btn ${canAfford ? 'btn-gold' : 'btn-dark'}" ${canAfford ? '' : 'disabled style="opacity:.4"'} onclick="claimReward('${r.id}', ${r.cost}, '${r.name}')">
+          ${canAfford ? 'Claim Reward →' : `Need ${(r.cost - state.xp.total).toLocaleString()} more XP`}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function claimReward(id, cost, name) {
+  if (state.xp.total < cost) return;
+  state.xp.total -= cost; // optimistic
+  updateUI(); updateRewards();
+  try {
+    const data = await apiPost('/api/tj/reward/claim', { rewardId: id, rewardName: name, cost });
+    if (data.ok) { state = data.state; updateUI(); updateRewards(); }
+    showToast('🎉 ' + name + ' claimed!');
+  } catch(e) { logError('claim_reward', e.message); showToast('Claim failed. Try again.'); }
+}
+// ═══════════════════════════════════════════════════════
+// PENALTIES (Parent)
+// ═══════════════════════════════════════════════════════
+const PENALTIES = [
+  { label: 'Bad Behavior', xp: 100 },
+  { label: 'Missed Chore', xp: 75 },
+  { label: 'Late Bedtime', xp: 50 },
+  { label: 'Disrespectful', xp: 150 },
+  { label: 'Homework Skip', xp: 200 },
+  { label: 'Lying', xp: 250 },
+];
+
+function renderPenalties() {
+  document.getElementById('penalty-grid').innerHTML = PENALTIES.map(p => `
+    <div class="penalty-btn" onclick="issuePenalty('${p.label}', ${p.xp})">
+      <div class="penalty-label">${p.label}</div>
+      <div class="penalty-xp">-${p.xp} XP</div>
+    </div>
+  `).join('');
+}
+
+function issuePenalty(reason, amount) {
+  if (!confirm(`Deduct ${amount} XP for "${reason}"?`)) return;
+  penalizeXP(amount, reason);
+}
+
+// ═══════════════════════════════════════════════════════
+// PARENT SETTINGS POPULATE
+// ═══════════════════════════════════════════════════════
+function populateParentSettings() {
+  const s = state.settings;
+  document.getElementById('setting-daily-goal').value = s.dailyGoal || 500;
+  document.getElementById('setting-xp-per-min').value = s.xpPerMin || 10;
+  document.getElementById('setting-oracle-hook').value = s.oracleHook || '';
+  document.getElementById('setting-todoist-hook').value = s.todoistHook || '';
+  document.getElementById('setting-log-hook').value = s.logHook || '';
+  document.getElementById('setting-todoist-project').value = s.todoistProjectId || '';
+  const advMonth = state.gradeAdvanceMonth;
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('setting-advance-date').textContent = `${months[advMonth-1]} 1`;
+}
+
+function saveAccessPassword() {
+  showToast('Access password is set via server .env (TJ_PASSWORD)');
+  document.getElementById('setting-access-pw').value = '';
+}
+async function resetDailyXP() {
+  if (!confirm("Reset today's XP and completed tasks?")) return;
+  await loadStateFromServer();
+  showToast('Reloaded from server.');
+}
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+renderSubjects();
+renderPenalties();
+updateUI();
+
+// On load — check server session, route to auth or PIN
+(async function checkOnLoad() {
+  if (!sessionToken) {
+    switchScreenRaw('auth');
+    setTimeout(() => document.getElementById('auth-password-input')?.focus(), 400);
+    return;
+  }
+  try {
+    const data = await fetch(API + '/api/tj/session', { headers: getAuthHeaders() }).then(r => r.json());
+    if (data.ok) {
+      sessionIsParent = data.isParent;
+      switchScreenRaw('pin');
+    } else {
+      clearSession();
+      switchScreenRaw('auth');
+      setTimeout(() => document.getElementById('auth-password-input')?.focus(), 400);
+    }
+  } catch(e) {
+    // Server unreachable — show pin, enterApp will show error
+    switchScreenRaw('pin');
+  }
+})();
+</script>
+</body>
+</html>

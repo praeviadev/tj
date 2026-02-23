@@ -1,0 +1,1970 @@
+{
+  "name": "covenant_dev",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate 5 extremely challenging and granular multiple-choice questions based on the Holy Bible.\n\nContext: The user is studying the book of {{ $json.body.book || $json.query.book }}. \n\nRequirement: Focus on a wide variety of questions from as simple as who's who to as difficult as deep, granular details: military headcounts (e.g., in Joshua or Chronicles), exact linguistic phrasing of prophecies, fill in the blanks, and historical context. Format: Return JSON only (questions array with q, options, correct index, and rationale).\n\nAnalyze the user's emotional and spiritual frequency. Output a JSON object containing 'output' (your response) and 'frequencies' (fear, tired, peace, faith as integers 0-100).\nStrictly output valid raw JSON with NO preamble or conversational text. Required Structure: \n\n{\n  \"output\": [\n    {\n      \"q\": \"Who was the first person to be called a Hebrew in the Bible?\",\n      \"options\": [\"Lot\", \"Abram\", \"Jacob\", \"Noah\"],\n      \"correct\": 1,\n      \"rationale\": \"Abram, who later became Abraham, is referred to as a Hebrew in Genesis 14:13.\"\n    }\n  ],\n  \"frequencies\": {\n    \"fear\": 0,\n    \"tired\": 0,\n    \"peace\": 75,\n    \"faith\": 90\n  }\n}\n\nInstructions: Frequencies must be 0-100. \n\nDo not output ```json",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        368,
+        960
+      ],
+      "id": "52a30c8b-27fe-4e25-80d8-b51c888930e8",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        384,
+        1184
+      ],
+      "id": "3a81e8fc-b443-4fe9-944d-8dac3adf080e",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QkhRjImGYv6dy99f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"output\": [\n    {\n      \"q\": \"Who was the first person to be called a Hebrew in the Bible?\",\n      \"options\": [\"Lot\", \"Abram\", \"Jacob\", \"Noah\"],\n      \"correct\": 1,\n      \"rationale\": \"Abram, who later became Abraham, is referred to as a Hebrew in Genesis 14:13.\"\n    }\n  ],\n  \"frequencies\": {\n    \"fear\": 0,\n    \"tired\": 0,\n    \"peace\": 75,\n    \"faith\": 90\n  }\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        512,
+        1184
+      ],
+      "id": "7fc383ee-9ca2-4a0f-97ef-eab408e9f5f2",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Respond to message: {{$json.body.message}}. Covenant Context: {{$json.body.rank}}. Instructions: Listen deeply to the user's confession. Respond with biblically-grounded wisdom like a priest or pastor. Don't sugar coat. Use scripture when needed. This is a confession, so be ready to hear down and dirty things. Respond non-judgementally, with a Christ-like balance. Use the provided history array for memory.\n\n{{ JSON.stringify($json.body.history) }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -208,
+        2576
+      ],
+      "id": "737cfcc9-b3dc-479d-b251-fe770818b9cc",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        2800
+      ],
+      "id": "298c50ce-42fb-4f54-99ae-93401b433c08",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QkhRjImGYv6dy99f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "httpMethod": [
+          "GET",
+          "POST"
+        ],
+        "path": "a6c8a8ef-903c-4194-9fe0-7296e99b6e22",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "GET, POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -432,
+        1120
+      ],
+      "id": "9e818a21-a5a2-44fb-a3e0-04fcfaa0494e",
+      "name": "Oracle",
+      "webhookId": "a6c8a8ef-903c-4194-9fe0-7296e99b6e22"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "96bfe04e-39d8-4fef-b8c1-d0aabb251255",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        2672
+      ],
+      "id": "8c09c5f7-b409-4e66-ad9d-81c1c4dcffe0",
+      "name": "Sanctuary",
+      "webhookId": "96bfe04e-39d8-4fef-b8c1-d0aabb251255"
+    },
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "httpMethod": [
+          "POST"
+        ],
+        "path": "93df2145-c435-4b45-9e8c-8190c8295148",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -432,
+        1792
+      ],
+      "id": "fe468201-bb98-41f4-89ff-20b50a43fa48",
+      "name": "Completed ToDoIst Task",
+      "webhookId": "93df2145-c435-4b45-9e8c-8190c8295148"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d123b4c3-c781-44a0-bac2-2bd02ab0f582",
+              "name": "xpAward",
+              "value": "={{ \n  Number(\n    ($json.body.event_data.content.match(/-?\\d+/) || [0])[0]\n  )\n}}\n",
+              "type": "number"
+            },
+            {
+              "id": "4f42cca5-fa63-4867-bc23-a2f313749586",
+              "name": "content",
+              "value": "={{ $json.body.event_data.content }}",
+              "type": "string"
+            },
+            {
+              "id": "6eb581f1-76de-4aea-afbf-54b4bc8cafea",
+              "name": "key",
+              "value": "covenant-sync-88",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -208,
+        1792
+      ],
+      "id": "f5532503-ba20-44b4-9420-a7c85519f5d0",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://covenant.praeviaintel.com/api/external/todoist-complete",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "={{ $json.key }}"
+            },
+            {
+              "name": "taskTitle",
+              "value": "={{ $json.content.replace(/(\\(\\d+\\sXP\\))/g, \"\").trim() }}"
+            },
+            {
+              "name": "xpAward",
+              "value": "={{ $json.xpAward }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        16,
+        1792
+      ],
+      "id": "c90caf3f-cb5d-405f-9b9e-52d6bce65d84",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "a97f625c-2465-4c7f-a7b3-dc743721ce88",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        3104
+      ],
+      "id": "1621befb-1aea-4d0c-8f01-802b06d5e1d0",
+      "name": "Outflow",
+      "webhookId": "a97f625c-2465-4c7f-a7b3-dc743721ce88"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are the Outflow Oracle. You analyze spiritual transcriptions to assign tactical missions.\n\n### DATA SOURCE CONSTRAINTS:\n1. NEVER invent names. Only extract names that are explicitly mentioned in the provided USER PRAYER.\n2. If the user mentions a name like \"John\" or \"Sarah\", give a relevant and effective action and assign it MISSION for that individual.\n3. If NO NAMES are found in the prayer (e.g. the Lord's Prayer), give a relevant and effective action and assign it to MISSION based on the prayer's theme.\n\n### RESPONSE PROTOCOL:\nOutput ONLY raw JSON:\n{\n  \"mission\": \"The specific or categorical mission. No placeholders like [name].\",\n  \"output\": \"A brief, 2-sentence spiritual confirmation of the intercession.\",\n  \"neighbors\": [\"Any NEW names found in the message to be added to the map\"],\n  \"frequencies\": {\n    \"fear\": 0-100,\n    \"tired\": 0-100,\n    \"peace\": 0-100,\n    \"faith\": 0-100\n  }\n}\n\n### TONE:\nPriestly and authoritative. If no names were mentioned, acknowledge the Warrior's focus on the 'Kingdom at large' rather than specific individuals.\n\nPrayer: {{ $json.body.message }}\n\nImportant People in my life: {{ JSON.stringify($json.body.neighbors) }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -208,
+        3008
+      ],
+      "id": "3f407f8d-a213-4e65-82c0-aa76f693a5f9",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        3232
+      ],
+      "id": "e1aed00e-77b9-4b90-a2a6-d52724a27f0b",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QkhRjImGYv6dy99f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"mission\": \"Encourage Sarah today regarding her new job mentioned in your prayer.\",\n  \"output\": \"Your intercession has been logged in the Archive. The fountain is flowing deep. Continue your watch.\",\n  \"frequencies\": {\n    \"fear\": 5,\n    \"tired\": 40,\n    \"peace\": 80,\n    \"faith\": 95\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        3232
+      ],
+      "id": "c3101e6b-7dc0-4839-a183-de5e14037759",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        2240
+      ],
+      "id": "6a58ba73-a675-45b2-8022-3a14a52e9577",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.tasks",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        368,
+        2240
+      ],
+      "id": "33a86eeb-fb01-4207-93de-92b1af8bf3d8",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "value": "2363132788",
+          "mode": "list",
+          "cachedResultName": "Inbox"
+        },
+        "labels": "=",
+        "content": "=({{ $('Loop Over Items').item.json['output.tasks'].xp }} XP) {{ $('Loop Over Items').item.json['output.tasks'].t }}",
+        "options": {
+          "description": "=Category: {{ $('Loop Over Items').item.json['output.tasks'].type }}\n\n{{ $json.output.Description }}",
+          "dueDateTime": "={{ $json.output.Time }}",
+          "priority": "={{ $json.output.Priority }}",
+          "deadlineDate": "={{ new Date(Date.now() + (86400000 * 2)).toLocaleDateString('en-CA') }}"
+        }
+      },
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.1,
+      "position": [
+        1168,
+        2240
+      ],
+      "id": "ecf518ca-248d-48b5-82a9-034ddc27aa2d",
+      "name": "Todoist",
+      "credentials": {
+        "todoistApi": {
+          "id": "QVLEJLshcfANWNIK",
+          "name": "praeviamail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        592,
+        2240
+      ],
+      "id": "617cf02d-ee85-460a-b679-480c70732464",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are the \"Priest of the Home\" Oracle. \nMISSION: Transform a detailed \"Dwelling State\" scan into tactical sacrificial missions.\n\nINPUT:\n- \"message\": {{ $json.body.message }}\n- \"lineage\": {{ JSON.stringify($json.body.lineage) }}\n\nTASK:\n1. For now, ignore hidden maintenance needs.\n2. Generate tasks based on input. Be sure to carve out all tasks!\n3. For now, ignore the lineage. \n\nCONSTRAINTS:\n- Return 5-50 tasks.\n- XP range: 50-500 based on effort/time.\n- Health related tasks are triple the normal XP.\n\nOUTPUT FORMAT (JSON):\n{\n  \"reply\": \"Authoritative priestly encouragement.\",\n  \"tasks\": [\n    { \"t\": \"Inspect car tire pressure\", \"xp\": 75, \"type\": \"Maintenance\" },\n    { \"t\": \"Leave a secret note for wife\", \"xp\": 150, \"type\": \"Relational\" }\n  ]\n}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -208,
+        2144
+      ],
+      "id": "0e3aed67-4742-4fe4-b51c-bd4e8a490670",
+      "name": "AI Agent3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        2368
+      ],
+      "id": "fe9deb86-6e0c-453c-803a-7cb61d82d93c",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QkhRjImGYv6dy99f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"reply\": \"Authoritative priestly encouragement.\",\n  \"tasks\": [\n    { \"t\": \"Inspect car tire pressure\", \"xp\": 75, \"type\": \"Maintenance\" },\n    { \"t\": \"Leave a secret note for wife\", \"xp\": 150, \"type\": \"Relational\" }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        2368
+      ],
+      "id": "eabe1f83-49b7-4387-9f3b-90929b70dee9",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "e0778d86-5949-434c-9838-e9a79d61147e",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        2240
+      ],
+      "id": "fab9dcef-0261-4406-a340-31e993a616d8",
+      "name": "household",
+      "webhookId": "e0778d86-5949-434c-9838-e9a79d61147e"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are TEMPLE ORACLE: a brutally honest evaluator of discipline for building an elite athlete's body in service to Jesus Christ.\n\nIf {{ $json.body.type }} is food_log:\nInput:\n- The user's food/hydration log is: \"{{ $json.body.message }}\"\n- The timestamp is: \"{{ $json.body.date }}\"\n- The user's current total XP is: {{ $json.body.xp }}\n\nTask:\nScore this log with a harsh, performance-driven standard. The score is DAILY IMPACT XP and may be NEGATIVE if the user is stagnant or damaging their fitness.\n\nOutput JSON ONLY with these fields:\n{\n  \"xp\": -350,\n  \"reply\": \"You ate junk + skipped hydration. This moves you away from elite-athlete standards.\",\n  \"frequencies\": { \"fear\": 5, \"tired\": 35, \"peace\": 40, \"faith\": 80 }\n}\n\nScoring rules (BRUTAL):\n1) Start at 0. Add/subtract using the breakdown categories. Then clamp final score to [-1000, 100]. Return score as an integer.\n2) If the log is vague or missing key info (no foods listed, no quantities, no water mention, lazy exercise, no structure), apply honesty_clarity penalty (up to -1000) and set needs_more_detail=true. \n3) Hydration: +15 to +25 if strong, -10 to -25 if poor.\n4) Protein_quality: +10 to +25 if high quality, -10 to -25 if poor.\n5) Calorie_control: +10 to +25 if disciplined, -10 to -25 if bingeing.\n6) Micronutrients_fiber: +5 to +15 if present, -5 to -15 if absent.\n7) Processed_sugar_alcohol: alcohol -15 to -30, junk -10 to -30.\n8) Timing_recovery: +5 to +10 if supports training, -5 to -10 if not.\n9) Consistency_bonus: +10 to +25 if consistent, -5 to -10 if stagnating.\n10) Verdict: ELITE, DISCIPLINED, SOLID, OK, WEAK, SLOPPY, COMPROMISED, SELF-SABOTAGE.\n\nHard penalties: alcohol/heavy junk/binge = score <= -25. Elite day = +60 to +100.\n\nStrict output: ONLY raw valid JSON. No markdown. No extra text.\n\nIf {{ $json.body.type }} is exercise_log:\nYou are TEMPLE ORACLE: a merciless evaluator of physical discipline.\n\nInput:\n- Exercise log: \"{{ $json.body.message }}\"\n- User XP: {{ $json.body.xp }}\n- Timestamp: \"{{ $json.body.date }}\"\n\nOutput JSON ONLY:\n{\n  \"xp\": \"45\",\n  \"reply\": \"<short, blunt evaluation>\",\n  \"frequencies\": { \"fear\": 0, \"tired\": 0, \"peace\": 0, \"faith\": 0 }\n}\n\nClamp to [-1000, 100]. Output valid raw JSON only. No markdown.",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -208,
+        224
+      ],
+      "id": "5da19dd5-6006-4348-9da1-6531839d84b1",
+      "name": "AI Agent4"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        448
+      ],
+      "id": "143fbc37-8efd-4f53-9731-9bc38453d9ff",
+      "name": "OpenRouter Chat Model4",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QkhRjImGYv6dy99f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"xp\": \"45\",\n  \"reply\": \"<short, blunt evaluation>\",\n  \"frequencies\": {\n    \"fear\": 100,\n    \"tired\": 100,\n    \"peace\": 100,\n    \"faith\": 100\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        448
+      ],
+      "id": "4af1e54e-fb56-49b7-8df6-c9af76a1148b",
+      "name": "Structured Output Parser3"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "74e86db0-e746-4ace-b52c-168bd0606b28",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "GET, POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        336
+      ],
+      "id": "76d7ba1c-525c-4cab-8c5c-66a2ec7ac652",
+      "name": "Temple",
+      "webhookId": "74e86db0-e746-4ace-b52c-168bd0606b28"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        144,
+        336
+      ],
+      "id": "3c8a790f-acca-4908-9e43-d7b03418f76f",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=This is my task: {{ $json['output.tasks'].t }}\n\nProvide a description of the task for ToDoIst as well as materials, people, places, things, times, etc. Whatever you can think of in a description that would make this task easier. Make a small checklist.\n\nRecommend a time to complete the task. The date is {{ new Date(Date.now() + 86400000).toLocaleDateString('en-CA') }}.\n\nThe time must be in this UTC format: 2026-02-08T12:00:00.000Z\nKeep in mind that I am Eastern Time Zone.\n\nRecommend a priority 1 through 4 with 1 being highest priority.\n\n{\n  \"Description\": \"Things said, blah blah.\",\n  \"Time\": \"{{ new Date(Date.now() + 86400000).toLocaleDateString('en-CA') }} -5:00\",\n  \"Priority\": 2\n}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        816,
+        2112
+      ],
+      "id": "cbd601ce-e6bf-43e2-ac7a-3c8184b337d3",
+      "name": "AI Agent5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        832,
+        2336
+      ],
+      "id": "a0ed6d37-c234-4d3f-8ee4-05fc12592fbf",
+      "name": "OpenRouter Chat Model5",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QkhRjImGYv6dy99f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"Description\": \"Things said, blah blah.\",\n  \"Time\": \"7:00am\",\n  \"Priority\": 1\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        960,
+        2336
+      ],
+      "id": "b47a802e-82de-43bb-9ad8-890cd6d7ef41",
+      "name": "Structured Output Parser4"
+    },
+    {
+      "parameters": {
+        "chatId": "6699225873",
+        "text": "={{ $json.body.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -208,
+        0
+      ],
+      "id": "8d0583fa-3672-474c-b21f-c689674ae306",
+      "name": "Send a text message",
+      "credentials": {
+        "telegramApi": {
+          "id": "ePnl8JbTfnnJ10Kr",
+          "name": "madison"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "d53b7f16-18ce-40e1-a4c6-54dc37eb1d95",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -432,
+        0
+      ],
+      "id": "b200b92a-ff38-4362-b80c-270e7e31281d",
+      "name": "Webhook",
+      "webhookId": "d53b7f16-18ce-40e1-a4c6-54dc37eb1d95"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-open-response",
+              "leftValue": "={{ $json.body.action }}",
+              "rightValue": "open_response",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -208,
+        1120
+      ],
+      "id": "12344345-f307-4838-98bb-f4e7e89ab998",
+      "name": "Oracle: open_response?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-grade",
+              "leftValue": "={{ $json.body.action }}",
+              "rightValue": "grade_open_response",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        80,
+        1264
+      ],
+      "id": "1cd015d3-8ccb-4344-a709-8fafa0e8e1ac",
+      "name": "Oracle: grade_open_response?"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate {{ $json.body.count || 5 }} open-response Bible questions for the book of {{ $json.body.book }}.\n\nThese are NOT multiple choice. The student must write a full paragraph response to each.\n\nMix these types equally:\n- Theological: What does this passage reveal about God's character, justice, mercy, or plan?\n- Narrative/factual: Describe the events of a specific chapter, who was involved, what happened, and why it matters.\n- Deep detail: Exact names, numbers, covenants, geographic locations, prophecy wording, genealogies.\n- Application: How does this passage apply to a believer living today? What obedience does it demand?\n\nMake them genuinely challenging. Pull from obscure passages as well as famous ones.\nAvoid yes/no questions. Every question must require a substantive written answer.\n\nReturn ONLY raw JSON with no markdown and no preamble:\n{\n  \"questions\": [\n    \"Full question text here\",\n    \"Full question text here\"\n  ]\n}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        16,
+        768
+      ],
+      "id": "1fbed74b-cd1a-4a9e-8e29-c4b237f2c9ff",
+      "name": "AI Agent: Open Questions"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        32,
+        992
+      ],
+      "id": "f4880a93-c433-4587-b8af-ee0b4e79d5c2",
+      "name": "OpenRouter: Open Questions",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QkhRjImGYv6dy99f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"questions\": [\n    \"Full question text here\",\n    \"Full question text here\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        192,
+        976
+      ],
+      "id": "e064da3c-1a17-4940-8436-00f6188b2953",
+      "name": "Structured Output Parser5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        768
+      ],
+      "id": "c93ed18f-bf39-4776-982b-f3cbe9e8a9d2",
+      "name": "Respond: Open Questions"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a strict biblical scholar grading a student's written answer.\n\nBook: {{ $json.body.book }}\nQuestion: {{ $json.body.question }}\nStudent Answer: {{ $json.body.answer }}\n\nGrade on a scale of 0-100:\n- 0-39: Wrong, irrelevant, or too vague \u2014 no credit\n- 40-69: Partially correct \u2014 right direction but missing key details or substance\n- 70-89: Correct and solid \u2014 covers the main points with adequate depth\n- 90-100: Excellent \u2014 accurate, specific, demonstrates mastery\n\nBe specific in your feedback. If the answer is wrong or partial, state exactly what the correct answer is and what they missed. Reference the specific chapter/verse when relevant. Do not soften or encourage laziness.\n\nReturn ONLY raw JSON with no markdown and no preamble:\n{\n  \"score\": 85,\n  \"correct\": true,\n  \"feedback\": \"You correctly identified X but missed Y. The key detail from [Book Chapter:Verse] was Z...\"\n}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        368,
+        1456
+      ],
+      "id": "ccc7b6c9-2da4-49de-b186-f569df17b3c4",
+      "name": "AI Agent: Grade Answer"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        384,
+        1680
+      ],
+      "id": "5547fb92-6249-4f4b-829e-3bcddad012ed",
+      "name": "OpenRouter: Grade Answer",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QkhRjImGYv6dy99f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"score\": 85,\n  \"correct\": true,\n  \"feedback\": \"You correctly identified X but missed Y. The key detail from [Book Chapter:Verse] was Z...\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        544,
+        1664
+      ],
+      "id": "5ee78095-86ad-4a9d-8263-eae400cdb67d",
+      "name": "Structured Output Parser6"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        720,
+        1456
+      ],
+      "id": "74d400be-5c6f-4dc8-bab4-8c48ede85389",
+      "name": "Respond: Grade Answer"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "c4f1a2b3-d5e6-7890-abcd-ef1234567890",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "GET, POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        3536
+      ],
+      "id": "bb4a0e9e-51a8-4044-9874-c47d56675e96",
+      "name": "Career",
+      "webhookId": "c4f1a2b3-d5e6-7890-abcd-ef1234567890"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate {{ $json.body.count || 5 }} multiple-choice quiz questions on the topic: \"{{ $json.body.topic }}\".\n\nDifficulty level: {{ $json.body.difficulty }}\n- basic: foundational concepts, definitions, common knowledge\n- intermediate: applied knowledge, scenario-based, requires solid understanding\n- advanced: edge cases, deep technical detail, requires mastery\n- expert: highly specific, nuanced, tests expert-level knowledge only\n\nMake every question genuinely useful for professional development, certification prep, or job performance. No filler.\n\nReturn ONLY raw JSON with no markdown and no preamble:\n{\n  \"output\": [\n    {\n      \"q\": \"Question text here\",\n      \"options\": [\"Option A\", \"Option B\", \"Option C\", \"Option D\"],\n      \"correct\": 0,\n      \"rationale\": \"Explanation of why the correct answer is right and why the others are wrong.\"\n    }\n  ],\n  \"frequencies\": {\n    \"fear\": 0,\n    \"tired\": 0,\n    \"peace\": 75,\n    \"faith\": 90\n  }\n}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        16,
+        3536
+      ],
+      "id": "484141c7-6263-414b-abe4-b9a6367e93e4",
+      "name": "AI Agent: Career Drill"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        32,
+        3760
+      ],
+      "id": "031567c6-6fc2-4c66-bfd0-cb4d31d03d44",
+      "name": "OpenRouter: Career Drill",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QkhRjImGYv6dy99f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"output\": [\n    {\n      \"q\": \"Question text\",\n      \"options\": [\"A\", \"B\", \"C\", \"D\"],\n      \"correct\": 0,\n      \"rationale\": \"Explanation\"\n    }\n  ],\n  \"frequencies\": {\n    \"fear\": 0,\n    \"tired\": 0,\n    \"peace\": 75,\n    \"faith\": 90\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        160,
+        3760
+      ],
+      "id": "d13b3bd0-a29b-4b94-9d5a-5609fa52f105",
+      "name": "Parser: Career Drill"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        368,
+        3536
+      ],
+      "id": "d6d81cc1-42ce-44d6-a58a-c26dc9d7f15a",
+      "name": "Respond: Career Drill"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 4
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -432,
+        4100
+      ],
+      "id": "aa001111-bb22-cc33-dd44-ee5566778899",
+      "name": "Reminder Schedule"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.todoist.com/rest/v2/tasks",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "todoistApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -208,
+        4100
+      ],
+      "id": "bb112222-cc33-dd44-ee55-ff6677889900",
+      "name": "Get All Tasks",
+      "credentials": {
+        "todoistApi": {
+          "id": "QVLEJLshcfANWNIK",
+          "name": "praeviamail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "// Todoist v2 API returns an array directly\nconst tasks = (Array.isArray(items[0]?.json) ? items[0].json : items.map(i => i.json))\n  .filter(t => t.content && !t.is_completed);\n\nif (!tasks.length) {\n  return [{ json: { content: 'No pending tasks found.', due: 'None', priority: 4, url: '', total: 0 } }];\n}\n\nconst task = tasks[Math.floor(Math.random() * tasks.length)];\nreturn [{ json: {\n  content: task.content || '',\n  due: task.due ? (task.due.string || task.due.date) : 'No due date',\n  priority: task.priority || 1,\n  url: task.url || `https://todoist.com/app/task/${task.id}`,\n  total: tasks.length\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        4100
+      ],
+      "id": "cc223333-dd44-ee55-ff66-aa7788990011",
+      "name": "Pick Random Task"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are Madison, a warm but firm accountability partner sending a task reminder to a Covenant Warrior.\n\nTask: {{ $json.content }}\nDue: {{ $json.due }}\nPriority: {{ $json.priority }} (1=urgent, 4=low)\nTotal pending tasks: {{ $json.total }}\n\nWrite a short, punchy Telegram message (2-3 sentences max) reminding him to complete this task.\n- Reference the task specifically by name\n- Match urgency to priority (1 = sharp and urgent, 4 = casual nudge)\n- Occasionally tie it to his covenant or his family (but don't force it every time)\n- End with the Todoist task URL on its own line if provided: {{ $json.url }}\n- Use 1 relevant emoji at the start\n- No fluff. Make him move.\n\nOutput ONLY the message text. Nothing else.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        240,
+        4100
+      ],
+      "id": "dd334444-ee55-ff66-aa77-bb8899001122",
+      "name": "AI Agent: Reminder"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        240,
+        4300
+      ],
+      "id": "ee445555-ff66-aa77-bb88-cc9900112233",
+      "name": "OpenRouter: Reminder",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QkhRjImGYv6dy99f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "6699225873",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        464,
+        4100
+      ],
+      "id": "ff556666-aa77-bb88-cc99-dd0011223344",
+      "name": "Send Reminder",
+      "credentials": {
+        "telegramApi": {
+          "id": "ePnl8JbTfnnJ10Kr",
+          "name": "madison"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "b7c8d9e0-f1a2-3456-bcde-f01234567890",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "GET, POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        4500
+      ],
+      "id": "tj-webhook-001",
+      "name": "TJ Oracle",
+      "webhookId": "b7c8d9e0-f1a2-3456-bcde-f01234567890"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "tj-cond-quiz",
+              "leftValue": "={{ $json.body.action }}",
+              "rightValue": "tj_quiz",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -208,
+        4500
+      ],
+      "id": "tj-if-quiz",
+      "name": "TJ: tj_quiz?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "tj-cond-notify",
+              "leftValue": "={{ $json.body.action }}",
+              "rightValue": "tj_notify",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        80,
+        4640
+      ],
+      "id": "tj-if-notify",
+      "name": "TJ: tj_notify?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "tj-cond-fit",
+              "leftValue": "={{ $json.body.action }}",
+              "rightValue": "tj_fitness",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        80,
+        4800
+      ],
+      "id": "tj-if-fitness",
+      "name": "TJ: tj_fitness?"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert elementary school teacher generating quiz questions.\n\nSubject: {{ $json.body.subject }}\nGrade Level: {{ $json.body.grade }}th grade\nQuestion Type: {{ $json.body.type || 'mcq' }}\nCount: {{ $json.body.count || 10 }}\n\nSUBJECT GUIDELINES:\n- math: Grade-appropriate arithmetic, fractions, decimals, word problems, geometry basics. For 4th grade: multi-digit multiplication, long division, fractions, area/perimeter. For 5th grade: add decimals, fraction operations, volume, order of operations. For math questions, use typed-answer format (no options array \u2014 set options to [] and correct to the numeric answer).\n- ela: Vocabulary, grammar, parts of speech, sentence structure, reading comprehension, figurative language appropriate to grade level.\n- social: US history, geography, civics, cultures \u2014 appropriate to grade. 4th/5th: states/capitals, US regions, Native American history, colonial America, branches of government.\n- science: Life science, earth science, physical science appropriate to grade. 4th/5th: ecosystems, weather, matter/energy, simple machines, the solar system.\n- bible: Old and New Testament stories, key figures, basic theology, memorization verses. Age-appropriate, encouraging, faith-building.\n- reading: Reading comprehension, story elements, author's purpose, main idea, inference. Use short passage or scenario.\n\nRULES:\n- Make questions fun and engaging for a kid, not dry or clinical\n- Bible and ELA questions should feel encouraging, not punishing\n- Math word problems should use relatable scenarios (sports, food, games)\n- Mix difficulty: 60% straightforward, 40% challenging\n- For MCQ: 4 answer choices, one clearly correct, distractors should be plausible not silly\n- For math typed-answer: set options to [] and correct to the numeric answer as a number\n\nReturn ONLY raw JSON, no markdown:\n{\n  \"output\": [\n    {\n      \"q\": \"Question text\",\n      \"options\": [\"A\", \"B\", \"C\", \"D\"],\n      \"correct\": 0,\n      \"rationale\": \"Brief, encouraging explanation of why this is correct\"\n    }\n  ]\n}\n\nFor math typed-answer format:\n{\n  \"output\": [\n    {\n      \"q\": \"If TJ has 24 basketball cards and gives 8 to his friend, how many does he have left?\",\n      \"options\": [],\n      \"correct\": 16,\n      \"rationale\": \"24 minus 8 equals 16. Subtraction!\"\n    }\n  ]\n}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        16,
+        4500
+      ],
+      "id": "tj-agent-quiz",
+      "name": "AI Agent: TJ Quiz"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        16,
+        4700
+      ],
+      "id": "tj-model-quiz",
+      "name": "OpenRouter: TJ Quiz",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QkhRjImGYv6dy99f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"output\": [\n    {\n      \"q\": \"Question text\",\n      \"options\": [\"A\", \"B\", \"C\", \"D\"],\n      \"correct\": 0,\n      \"rationale\": \"Why this is correct\"\n    }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        160,
+        4700
+      ],
+      "id": "tj-parser-quiz",
+      "name": "Parser: TJ Quiz"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        368,
+        4500
+      ],
+      "id": "tj-respond-quiz",
+      "name": "Respond: TJ Quiz"
+    },
+    {
+      "parameters": {
+        "chatId": "6699225873",
+        "text": "={{ $json.body.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        368,
+        4640
+      ],
+      "id": "tj-telegram-notify",
+      "name": "TJ: Send Telegram",
+      "credentials": {
+        "telegramApi": {
+          "id": "ePnl8JbTfnnJ10Kr",
+          "name": "madison"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"ok\": true }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        4640
+      ],
+      "id": "tj-respond-notify",
+      "name": "Respond: TJ Notify"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are scoring a child's physical activity log for a gamified fitness app.\n\nChild's grade: {{ $json.body.grade }}th grade\nActivity log: \"{{ $json.body.log }}\"\n\nScore 0-200 XP based on:\n- Duration and intensity (0 = no activity, 200 = excellent sustained effort)\n- Be GENEROUS and ENCOURAGING for a kid \u2014 any genuine movement deserves at least 50 XP\n- 15-30 min light activity: 75-100 XP\n- 30-60 min moderate: 100-150 XP\n- 60+ min or vigorous: 150-200 XP\n- If the log is vague or unclear: 50 XP + encourage more detail next time\n\nAlways respond with an encouraging message using his name TJ.\n\nReturn ONLY raw JSON:\n{\n  \"xp\": 100,\n  \"reply\": \"Great job TJ! \ud83d\udcaa Keep it up!\"\n}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        368,
+        4800
+      ],
+      "id": "tj-agent-fitness",
+      "name": "AI Agent: TJ Fitness"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        368,
+        5000
+      ],
+      "id": "tj-model-fitness",
+      "name": "OpenRouter: TJ Fitness",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QkhRjImGYv6dy99f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\"xp\": 100, \"reply\": \"Great job TJ!\"}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        512,
+        5000
+      ],
+      "id": "tj-parser-fitness",
+      "name": "Parser: TJ Fitness"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        720,
+        4800
+      ],
+      "id": "tj-respond-fitness",
+      "name": "Respond: TJ Fitness"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"ok\": false, \"error\": \"unknown_action\" }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        368,
+        4960
+      ],
+      "id": "tj-respond-fallback",
+      "name": "Respond: TJ Fallback"
+    }
+  ],
+  "connections": {
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sanctuary": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Completed ToDoIst Task": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Todoist": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "AI Agent5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent3": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "household": {
+      "main": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser3": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Temple": {
+      "main": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent4": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent5": {
+      "main": [
+        [
+          {
+            "node": "Todoist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent5",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser4": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent5",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Oracle": {
+      "main": [
+        [
+          {
+            "node": "Oracle: open_response?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Oracle: open_response?": {
+      "main": [
+        [
+          {
+            "node": "AI Agent: Open Questions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Oracle: grade_open_response?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Oracle: grade_open_response?": {
+      "main": [
+        [
+          {
+            "node": "AI Agent: Grade Answer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent: Open Questions": {
+      "main": [
+        [
+          {
+            "node": "Respond: Open Questions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter: Open Questions": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent: Open Questions",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser5": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent: Open Questions",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent: Grade Answer": {
+      "main": [
+        [
+          {
+            "node": "Respond: Grade Answer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter: Grade Answer": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent: Grade Answer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser6": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent: Grade Answer",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Career": {
+      "main": [
+        [
+          {
+            "node": "AI Agent: Career Drill",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent: Career Drill": {
+      "main": [
+        [
+          {
+            "node": "Respond: Career Drill",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter: Career Drill": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent: Career Drill",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser: Career Drill": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent: Career Drill",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reminder Schedule": {
+      "main": [
+        [
+          {
+            "node": "Get All Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Tasks": {
+      "main": [
+        [
+          {
+            "node": "Pick Random Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Random Task": {
+      "main": [
+        [
+          {
+            "node": "AI Agent: Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent: Reminder": {
+      "main": [
+        [
+          {
+            "node": "Send Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter: Reminder": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent: Reminder",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TJ Oracle": {
+      "main": [
+        [
+          {
+            "node": "TJ: tj_quiz?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TJ: tj_quiz?": {
+      "main": [
+        [
+          {
+            "node": "AI Agent: TJ Quiz",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "TJ: tj_notify?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TJ: tj_notify?": {
+      "main": [
+        [
+          {
+            "node": "TJ: Send Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "TJ: tj_fitness?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TJ: tj_fitness?": {
+      "main": [
+        [
+          {
+            "node": "AI Agent: TJ Fitness",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: TJ Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent: TJ Quiz": {
+      "main": [
+        [
+          {
+            "node": "Respond: TJ Quiz",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter: TJ Quiz": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent: TJ Quiz",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser: TJ Quiz": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent: TJ Quiz",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TJ: Send Telegram": {
+      "main": [
+        [
+          {
+            "node": "Respond: TJ Notify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent: TJ Fitness": {
+      "main": [
+        [
+          {
+            "node": "Respond: TJ Fitness",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter: TJ Fitness": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent: TJ Fitness",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser: TJ Fitness": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent: TJ Fitness",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "ghDrh278oSR34QHd",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "1417461a-51f5-4c94-94b7-491ec89928be",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fd2e1b403be4950b14d360dc240e2d7c8966a708eb06e40cc6e87c48c912111d"
+  },
+  "id": "U10lj9w3yd0w4lqu",
+  "tags": []
+}
