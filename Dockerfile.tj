@@ -1,0 +1,21 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm ci --omit=dev
+
+COPY tj-server.js ./
+COPY db.js ./
+
+RUN mkdir -p public
+COPY tj.html ./public/tj.html
+
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
+RUN chown -R nodejs:nodejs /app
+USER nodejs
+
+EXPOSE 3001
+
+CMD ["node", "tj-server.js"]
