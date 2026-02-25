@@ -37,9 +37,9 @@
 
 
   /* ── AUTH SCREEN ── */
-  #screen-auth { display:flex; flex-direction:column; align-items:center; justify-content:center;
-    background: radial-gradient(ellipse at 50% 0%, #1a2340 0%, #0d1117 70%); }
-  #screen-auth.active { display:flex; }
+  #screen-auth { display:none; flex-direction:column; align-items:center; justify-content:center;
+    background: radial-gradient(ellipse at 50% 0%, #1a2140 0%, #0d1117 70%); z-index:1000; }
+  #screen-auth.active { display:flex !important; }
   .auth-logo { font-family:'Bangers',cursive; font-size:52px; color:var(--accent);
     letter-spacing:3px; text-shadow:0 0 30px rgba(240,192,64,0.4); margin-bottom:4px; }
   .auth-sub { color:var(--muted); font-size:13px; font-weight:600; margin-bottom:32px; text-align:center; padding:0 24px; }
@@ -51,7 +51,7 @@
   .auth-error { color:var(--danger); font-size:13px; font-weight:700; text-align:center; min-height:20px; }
 
   /* ── PIN SCREEN ── */
-  #screen-pin { display: flex; flex-direction: column; align-items: center; justify-content: center;
+  #screen-pin { display: none; flex-direction: column; align-items: center; justify-content: center;
     background: radial-gradient(ellipse at 50% 0%, #1a2340 0%, #0d1117 70%); }
   #screen-pin.active { display: flex; }
   .pin-logo { font-family: 'Bangers', cursive; font-size: 52px; color: var(--accent);
@@ -98,9 +98,9 @@
     padding: 4px 10px; border-radius: 20px; }
 
   /* ── HOME SCREEN ── */
-  .hero-xp { text-align: center; padding: 24px 20px 16px; }
+  .hero-xp { text-align: center; padding: 12px 20px 8px; }
   .hero-name { font-size: 16px; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
-  .hero-total { font-family: 'Bangers', cursive; font-size: 72px; color: var(--accent);
+  .hero-total { font-family: 'Bangers', cursive; font-size: 52px; color: var(--accent);
     line-height: 1; text-shadow: 0 0 40px rgba(240,192,64,0.3); }
   .hero-label { font-size: 13px; color: var(--muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
   .grade-badge { display: inline-block; background: rgba(88,166,255,0.15); border: 1px solid rgba(88,166,255,0.4);
@@ -309,38 +309,9 @@
 <!-- ═══════════════════════════════════════════════════ -->
 <!-- PIN SCREEN -->
 <!-- ═══════════════════════════════════════════════════ -->
-<div id="screen-pin" class="screen">
-  <div class="pin-logo">⚔️ TJ ACADEMY</div>
-  <div class="pin-sub" id="pin-sub-text">Enter your PIN</div>
-  <div class="pin-dots">
-    <div class="pin-dot" id="dot-0"></div>
-    <div class="pin-dot" id="dot-1"></div>
-    <div class="pin-dot" id="dot-2"></div>
-    <div class="pin-dot" id="dot-3"></div>
-  </div>
-  <div class="pin-pad">
-    <button class="pin-btn" onclick="pinPress('1')">1</button>
-    <button class="pin-btn" onclick="pinPress('2')">2</button>
-    <button class="pin-btn" onclick="pinPress('3')">3</button>
-    <button class="pin-btn" onclick="pinPress('4')">4</button>
-    <button class="pin-btn" onclick="pinPress('5')">5</button>
-    <button class="pin-btn" onclick="pinPress('6')">6</button>
-    <button class="pin-btn" onclick="pinPress('7')">7</button>
-    <button class="pin-btn" onclick="pinPress('8')">8</button>
-    <button class="pin-btn" onclick="pinPress('9')">9</button>
-    <button class="pin-btn empty"></button>
-    <button class="pin-btn" onclick="pinPress('0')">0</button>
-    <button class="pin-btn del" onclick="pinDel()">⌫</button>
-  </div>
-  <div class="pin-error" id="pin-error"></div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════ -->
-<!-- HOME SCREEN -->
-<!-- ═══════════════════════════════════════════════════ -->
 <div id="screen-home" class="screen">
   <div class="hero-xp">
-    <div class="hero-name">Good morning, TJ 👊</div>
+    <div class="hero-name" id="hero-greeting">Hey, TJ 👊</div>
     <div class="hero-total" id="home-xp-total">0</div>
     <div class="hero-label">Total XP</div>
     <div class="grade-badge" id="home-grade-badge">5th Grade</div>
@@ -366,32 +337,32 @@
     <div class="xp-cat">
       <div class="xp-cat-icon">📚</div>
       <div class="xp-cat-label">Education</div>
-      <div class="xp-cat-val" id="xp-edu" style="color:var(--edu)">0</div>
+      <div class="xp-cat-val" id="home-xp-edu">0</div>
     </div>
     <div class="xp-cat">
       <div class="xp-cat-icon">💪</div>
       <div class="xp-cat-label">Fitness</div>
-      <div class="xp-cat-val" id="xp-fit" style="color:var(--fit)">0</div>
+      <div class="xp-cat-val" id="home-xp-fit">0</div>
     </div>
     <div class="xp-cat">
       <div class="xp-cat-icon">✝️</div>
       <div class="xp-cat-label">Christian</div>
-      <div class="xp-cat-val" id="xp-chr" style="color:var(--chr)">0</div>
+      <div class="xp-cat-val" id="home-xp-chr">0</div>
     </div>
     <div class="xp-cat">
-      <div class="xp-cat-icon">⭐</div>
-      <div class="xp-cat-label">Character</div>
-      <div class="xp-cat-val" id="xp-char" style="color:var(--char)">0</div>
-    </div>
-    <div class="xp-cat">
-      <div class="xp-cat-icon">🤝</div>
-      <div class="xp-cat-label">Social</div>
-      <div class="xp-cat-val" id="xp-social" style="color:#79c0ff">0</div>
-    </div>
-    <div class="xp-cat">
-      <div class="xp-cat-icon">🏠</div>
+      <div class="xp-cat-icon">🎯</div>
       <div class="xp-cat-label">Responsibility</div>
-      <div class="xp-cat-val" id="xp-resp" style="color:var(--resp)">0</div>
+      <div class="xp-cat-val" id="home-xp-resp">0</div>
+    </div>
+    <div class="xp-cat" style="background:linear-gradient(135deg,#1a2340,#0d1117);border-color:#2d3748">
+      <div class="xp-cat-icon">📅</div>
+      <div class="xp-cat-label">Today</div>
+      <div class="xp-cat-val" id="home-xp-today" style="color:var(--accent)">0</div>
+    </div>
+    <div class="xp-cat" style="background:linear-gradient(135deg,#1a2340,#0d1117);border-color:#2d3748">
+      <div class="xp-cat-icon">📊</div>
+      <div class="xp-cat-label">This Week</div>
+      <div class="xp-cat-val" id="home-xp-week" style="color:#a78bfa">0</div>
     </div>
   </div>
 
@@ -521,6 +492,42 @@
     <div style="font-size:28px;font-weight:900;color:var(--fit)" id="fit-xp-today">0</div>
     <div style="font-size:12px;color:var(--muted);font-weight:700;margin-top:4px">Fitness XP Today</div>
   </div>
+
+
+  <!-- DIET SECTION -->
+  <div class="card" style="margin-top:0">
+    <div style="font-size:13px;font-weight:800;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em">🥗 Nutrition XP</div>
+    <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:14px">Earn big XP for eating healthy. Lose XP for junk food.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+      <div class="task-item" style="border-radius:12px;border:1px solid var(--border);padding:12px 14px">
+        <div style="font-size:24px">🥦</div>
+        <div class="task-info"><div class="task-title">Ate vegetables</div><div class="task-xp">+200 XP</div></div>
+        <button class="btn btn-success" style="width:auto;padding:8px 14px;font-size:13px" onclick="logDiet('vegetables', 200)">✓</button>
+      </div>
+      <div class="task-item" style="border-radius:12px;border:1px solid var(--border);padding:12px 14px">
+        <div style="font-size:24px">🍎</div>
+        <div class="task-info"><div class="task-title">Chose fruit over candy</div><div class="task-xp">+150 XP</div></div>
+        <button class="btn btn-success" style="width:auto;padding:8px 14px;font-size:13px" onclick="logDiet('fruit', 150)">✓</button>
+      </div>
+      <div class="task-item" style="border-radius:12px;border:1px solid var(--border);padding:12px 14px">
+        <div style="font-size:24px">💧</div>
+        <div class="task-info"><div class="task-title">Drank water (no soda)</div><div class="task-xp">+100 XP</div></div>
+        <button class="btn btn-success" style="width:auto;padding:8px 14px;font-size:13px" onclick="logDiet('water', 100)">✓</button>
+      </div>
+      <div class="task-item" style="border-radius:12px;border:1px solid var(--border);padding:12px 14px">
+        <div style="font-size:24px">🍱</div>
+        <div class="task-info"><div class="task-title">Ate a healthy full meal</div><div class="task-xp">+250 XP</div></div>
+        <button class="btn btn-success" style="width:auto;padding:8px 14px;font-size:13px" onclick="logDiet('meal', 250)">✓</button>
+      </div>
+    </div>
+    <div style="font-size:12px;font-weight:800;color:var(--danger);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">⚠️ Junk Food Penalties</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" style="background:#2d1515;border:1px solid #7f1d1d;color:var(--danger);font-size:12px;padding:8px 12px;border-radius:10px;font-weight:800" onclick="logDietPenalty('soda', 150)">🥤 Soda (-150)</button>
+      <button class="btn" style="background:#2d1515;border:1px solid #7f1d1d;color:var(--danger);font-size:12px;padding:8px 12px;border-radius:10px;font-weight:800" onclick="logDietPenalty('candy', 100)">🍬 Candy (-100)</button>
+      <button class="btn" style="background:#2d1515;border:1px solid #7f1d1d;color:var(--danger);font-size:12px;padding:8px 12px;border-radius:10px;font-weight:800" onclick="logDietPenalty('fastfood', 200)">🍔 Fast Food (-200)</button>
+      <button class="btn" style="background:#2d1515;border:1px solid #7f1d1d;color:var(--danger);font-size:12px;padding:8px 12px;border-radius:10px;font-weight:800" onclick="logDietPenalty('chips', 75)">🍟 Chips (-75)</button>
+    </div>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════ -->
@@ -545,10 +552,12 @@
 
   <div class="card">
     <div style="font-size:13px;font-weight:800;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em">Memorize a Verse</div>
-    <textarea class="fit-textarea" id="memory-verse-input" placeholder="Type the verse from memory..." style="min-height:80px"></textarea>
-    <button class="btn btn-dark" style="margin-top:10px" onclick="submitMemoryVerse()">Submit Memory Verse (+150 XP)</button>
+    <div style="font-size:12px;color:var(--muted);font-weight:600;font-style:italic;text-align:center;padding:8px 0">
+      Read and reflect on the verse above 🙏
+    </div>
   </div>
 </div>
+
 
 <!-- ═══════════════════════════════════════════════════ -->
 <!-- REWARDS SCREEN -->
@@ -561,16 +570,11 @@
 
   <div class="card" style="text-align:center;background:linear-gradient(135deg,#1a2340,#1a2d1a)">
     <div style="font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Your XP Bank</div>
-    <div style="font-family:'Bangers',cursive;font-size:64px;color:var(--accent)" id="rewards-xp-total">0</div>
-    <div style="font-size:12px;color:var(--muted);font-weight:700">Available to spend</div>
+    <div style="font-family:'Bangers',cursive;font-size:52px;color:var(--accent)" id="rewards-xp-total">0</div>
+    <div style="font-size:13px;color:var(--muted);font-weight:600" id="rewards-unlock-msg">Earn XP to unlock screen time.</div>
   </div>
 
-  <div id="rewards-list"></div>
-
-  <div class="card" style="border-color:rgba(240,192,64,0.3);background:rgba(240,192,64,0.05)">
-    <div style="font-size:13px;font-weight:800;color:var(--accent);margin-bottom:6px">🔓 Today's Unlock Status</div>
-    <div style="font-size:14px;font-weight:700;color:var(--text)" id="rewards-unlock-msg">Keep earning XP to unlock screen time!</div>
-  </div>
+  <div id="rewards-list" style="display:flex;flex-direction:column;gap:12px"></div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════ -->
@@ -578,21 +582,10 @@
 <!-- ═══════════════════════════════════════════════════ -->
 <div id="screen-parent" class="screen">
   <div class="page-header">
-    <div class="page-title">⚙️ Parent</div>
-    <div class="page-sub">Configure TJ's Academy</div>
+    <div class="page-title">⚙️ Parent Settings</div>
+    <div class="page-sub">Manage TJ's academy</div>
   </div>
 
-  <div class="parent-section">
-    <div class="parent-section-title">Account</div>
-    <div class="setting-row">
-      <div class="setting-label">Current Grade</div>
-      <div class="setting-val" id="setting-grade">5th</div>
-    </div>
-    <div class="setting-row">
-      <div class="setting-label">Grade Advance Date</div>
-      <div class="setting-val" id="setting-advance-date">Sept 1</div>
-    </div>
-  </div>
 
   <div class="parent-section">
     <div class="parent-section-title">Screen Time Goals</div>
@@ -644,21 +637,69 @@
   </div>
 
   <div class="parent-section">
-    <div class="parent-section-title">PIN Settings</div>
+    <div class="parent-section-title">Custom Rewards</div>
+    <div id="custom-rewards-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"></div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+      <input type="text" class="setting-input" id="new-reward-emoji" placeholder="🎁" style="width:52px;text-align:center;font-size:20px;padding:8px">
+      <input type="text" class="setting-input" id="new-reward-name" placeholder="Reward name (e.g. Trip to Disney World)" style="flex:2;min-width:120px">
+      <input type="number" class="setting-input" id="new-reward-cost" placeholder="XP cost" style="width:90px">
+    </div>
+    <button class="btn btn-gold" style="width:100%;padding:12px" onclick="addCustomReward()">+ Add Reward</button>
+  </div>
+
+  <div class="parent-section">
+    <div class="parent-section-title">Grade & Difficulty</div>
     <div class="setting-row">
-      <div class="setting-label">TJ's PIN</div>
-      <div class="setting-val" id="setting-tj-pin">••••</div>
+      <div class="setting-label">Current Grade Level</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn btn-dark" style="padding:6px 14px;font-size:18px" onclick="adjustGrade(-1)">−</button>
+        <div id="setting-grade" style="font-family:'Bangers',cursive;font-size:24px;color:var(--accent);min-width:60px;text-align:center">4th</div>
+        <button class="btn btn-dark" style="padding:6px 14px;font-size:18px" onclick="adjustGrade(1)">+</button>
+      </div>
     </div>
-    <button class="btn btn-dark" style="margin-bottom:8px" onclick="changePin('tj')">Change TJ's PIN</button>
-    <div class="setting-row" style="margin-top:4px">
-      <div class="setting-label">Parent PIN</div>
-      <div class="setting-val">••••</div>
+    <div style="font-size:11px;color:var(--muted);font-weight:600;margin-top:4px">Tip: You can set up to 2 grades above TJ's actual grade to increase difficulty.</div>
+  </div>
+
+  <div class="parent-section">
+    <div class="parent-section-title">Passwords</div>
+    <div style="font-size:12px;color:var(--muted);font-weight:700;line-height:2">
+      Passwords are set in the server <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">.env</code> file:<br>
+      <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">TJ_PASSWORD</code> — TJ's login<br>
+      <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">TJ_PARENT_PASSWORD</code> — Parent login
     </div>
-    <button class="btn btn-dark" onclick="changePin('parent')">Change Parent PIN</button>
   </div>
 
   <div class="parent-section">
     <button class="btn btn-danger" onclick="resetDailyXP()">Reset Today's XP</button>
+  </div>
+
+
+  <div class="parent-section">
+    <div class="parent-section-title">Grade Advance Date</div>
+    <div class="setting-row">
+      <div class="setting-label">Advance to next grade in</div>
+      <select class="setting-input" id="setting-advance-month" style="width:auto;padding:6px 10px" onchange="saveAdvanceMonth(this.value)">
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9" selected>September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="parent-section">
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-dark" style="flex:1;color:var(--danger)" onclick="resetDailyXP()">Reset Today's XP</button>
+      <button class="btn btn-dark" style="flex:1;color:var(--danger)" onclick="resetTotalXP()">Reset ALL XP ☠️</button>
+    </div>
   </div>
 </div>
 
@@ -687,6 +728,10 @@
   <div class="nav-item" id="nav-parent" style="display:none" onclick="switchScreen('parent')">
     <div class="nav-icon">⚙️</div>
     <div class="nav-label">Parent</div>
+  </div>
+  <div class="nav-item" onclick="logout()" id="nav-logout" style="display:none">
+    <div class="nav-icon">🚪</div>
+    <div class="nav-label">Logout</div>
   </div>
 </nav>
 
@@ -776,19 +821,19 @@ async function submitAuth() {
   const errEl = document.getElementById('auth-error');
   if (!pw) return;
   const btn = document.querySelector('#screen-auth .btn-gold');
-  btn.textContent = 'Checking...'; btn.disabled = true;
+  btn.textContent = 'Entering...'; btn.disabled = true;
   try {
-    const data = await fetch(API + '/api/tj/auth', {
+    const data = await fetch(API + '/api/tj/login', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password: pw })
     }).then(r => r.json());
-    if (data.ok && data.passwordAccepted) {
-      passwordAccepted = true;
+    if (data.ok) {
+      sessionToken = data.token;
+      sessionIsParent = data.isParent;
+      localStorage.setItem(TOKEN_KEY, data.token);
       errEl.textContent = '';
       input.value = '';
-      pinMode = 'tj';
-      document.getElementById('pin-sub-text').textContent = 'Enter your PIN';
-      switchScreenRaw('pin');
+      await enterApp(data.isParent);
     } else {
       errEl.textContent = 'Wrong password. Try again.';
       input.value = ''; input.focus();
@@ -800,95 +845,182 @@ async function submitAuth() {
   }
   btn.textContent = 'Enter Academy'; btn.disabled = false;
 }
+// PIN removed — password-only auth
+
 // ═══════════════════════════════════════════════════════
-// PIN
+// GREETING — time-aware
 // ═══════════════════════════════════════════════════════
-function pinPress(digit) {
-  if (pinBuffer.length >= 4) return;
-  pinBuffer += digit;
-  updatePinDots();
-  if (pinBuffer.length === 4) setTimeout(evaluatePin, 150);
+function updateGreeting() {
+  const h = new Date().getHours();
+  let greet;
+  if      (h >= 5  && h < 12) greet = "Good morning, TJ 👊";
+  else if (h >= 12 && h < 17) greet = "Good afternoon, TJ ⚡";
+  else if (h >= 17 && h < 21) greet = "Good evening, TJ 🔥";
+  else                         greet = "Hey TJ, up late? 👀";
+  const el = document.getElementById('hero-greeting');
+  if (el) el.textContent = greet;
 }
 
-function pinDel() {
-  pinBuffer = pinBuffer.slice(0, -1);
-  updatePinDots();
+// ═══════════════════════════════════════════════════════
+// DIET LOGGING
+// ═══════════════════════════════════════════════════════
+async function logDiet(item, xp) {
+  showToast(`+${xp} XP for healthy eating! 🥗`);
+  floatXP(xp);
+  await addXP(xp, 'fit', `Diet: ${item}`);
 }
 
-function updatePinDots() {
-  for (let i = 0; i < 4; i++) {
-    document.getElementById(`dot-${i}`).classList.toggle('filled', i < pinBuffer.length);
+async function logDietPenalty(item, amount) {
+  if (!confirm(`Log ${item}? This will cost you ${amount} XP.`)) return;
+  showToast(`-${amount} XP — junk food penalty 😬`, 3000);
+  floatXP(-amount);
+  await penalizeXP(amount, `Diet penalty: ${item}`);
+}
+
+// ═══════════════════════════════════════════════════════
+// CUSTOM REWARDS
+// ═══════════════════════════════════════════════════════
+function renderCustomRewards() {
+  const custom = state.settings.customRewards || [];
+  const list = document.getElementById('custom-rewards-list');
+  if (!list) return;
+  if (!custom.length) {
+    list.innerHTML = '<div style="font-size:12px;color:var(--muted);font-weight:600">No custom rewards yet.</div>';
+    return;
   }
+  list.innerHTML = custom.map((r, i) => `
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 14px">
+      <div>
+        <div style="font-weight:800;font-size:14px">${r.name}</div>
+        <div style="font-size:12px;color:var(--accent);font-weight:700">${r.cost} XP</div>
+      </div>
+      <button class="btn btn-dark" style="padding:6px 12px;font-size:12px;color:var(--danger)" onclick="removeCustomReward(${i})">✕</button>
+    </div>
+  `).join('');
 }
 
-async function evaluatePin() {
-  const sub = document.getElementById('pin-sub-text');
-  if (pinMode === 'tj') {
-    if (!passwordAccepted && !sessionToken) {
-      showPinError('Enter access password first.'); pinBuffer = ''; updatePinDots(); return;
-    }
-    try {
-      const data = await fetch(API + '/api/tj/pin', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pin: pinBuffer })
-      }).then(r => r.json());
-      if (data.ok) {
-        sessionToken = data.token;
-        sessionIsParent = data.isParent;
-        localStorage.setItem(TOKEN_KEY, data.token);
-        passwordAccepted = false;
-        await enterApp(data.isParent);
-      } else {
-        showPinError('Wrong PIN. Try again.');
-      }
-    } catch(e) {
-      showPinError('Server error. Try again.');
-      logError('pin_eval', e.message);
-    }
-  } else if (pinMode === 'change_tj' || pinMode === 'change_parent') {
-    if (pinChangeStep === 0) {
-      pinChangeNew = pinBuffer; pinBuffer = ''; updatePinDots();
-      sub.textContent = 'Confirm new PIN'; pinChangeStep = 1;
-    } else {
-      if (pinBuffer === pinChangeNew) {
-        const key = pinMode === 'change_tj' ? 'tjPin' : 'parentPin';
-        const data = await apiPost('/api/tj/settings', { [key]: pinBuffer });
-        if (data.ok) state = data.state;
-        showToast('PIN updated! ✓');
-        pinMode = 'tj'; pinChangeStep = 0;
-        document.getElementById('pin-sub-text').textContent = 'Enter your PIN';
-        await enterApp(currentScreen === 'parent');
-      } else {
-        showPinError("PINs don't match."); pinChangeStep = 0; sub.textContent = 'Enter new PIN';
-      }
-    }
-  }
-  pinBuffer = ''; updatePinDots();
+async function addCustomReward() {
+  const name = document.getElementById('new-reward-name').value.trim();
+  const cost = parseInt(document.getElementById('new-reward-cost').value);
+  if (!name || !cost || cost < 1) { showToast('Enter a name and XP cost'); return; }
+  const custom = state.settings.customRewards || [];
+  const emoji = document.getElementById('new-reward-emoji')?.value.trim() || '🎁';
+  custom.push({ name, cost, icon: emoji, id: 'custom_' + Date.now() });
+  state.settings.customRewards = custom;
+  await saveSetting('customRewards', custom);
+  const emojiEl = document.getElementById('new-reward-emoji'); if (emojiEl) emojiEl.value = '';
+  document.getElementById('new-reward-name').value = '';
+  document.getElementById('new-reward-cost').value = '';
+  renderCustomRewards();
+  updateRewards();
+  showToast(`Reward "${name}" added! 🎁`);
 }
-function showPinError(msg) {
-  document.getElementById('pin-error').textContent = msg;
-  setTimeout(() => document.getElementById('pin-error').textContent = '', 2000);
+
+async function removeCustomReward(idx) {
+  if (!confirm('Remove this reward?')) return;
+  const custom = state.settings.customRewards || [];
+  custom.splice(idx, 1);
+  state.settings.customRewards = custom;
+  await saveSetting('customRewards', custom);
+  renderCustomRewards();
+  updateRewards();
+}
+
+// ═══════════════════════════════════════════════════════
+// GRADE ADJUST
+// ═══════════════════════════════════════════════════════
+async function adjustGrade(delta) {
+  const actual = state.gradeYear || 4;
+  const current = state.settings.difficultyGrade || actual;
+  const min = actual;
+  const max = actual + 2;
+  const next = Math.max(min, Math.min(max, current + delta));
+  state.settings.difficultyGrade = next;
+  await saveSetting('difficultyGrade', next);
+  document.getElementById('setting-grade').textContent = next + 'th';
+  showToast(next === actual ? 'Back to grade level' : `Difficulty set to ${next}th grade`);
+}
+
+async function saveAdvanceMonth(val) {
+  state.gradeAdvanceMonth = parseInt(val);
+  await apiPost('/api/tj/settings', { gradeAdvanceMonth: parseInt(val) });
+  showToast('Grade advance date updated');
+}
+
+// ═══════════════════════════════════════════════════════
+// RESET TOTAL XP
+// ═══════════════════════════════════════════════════════
+async function resetTotalXP() {
+  if (!confirm('⚠️ RESET ALL XP? This cannot be undone.')) return;
+  if (!confirm('Are you absolutely sure? ALL XP will be gone.')) return;
+  state.xp = { total: 0, edu: 0, fit: 0, chr: 0, char: 0, resp: 0, social: 0 };
+  state.xpToday = 0;
+  state.xpLog = {};
+  await apiPost('/api/tj/xp', { amount: -(state.xp.total + 999999), category: 'edu', reason: 'Parent reset all XP' });
+  await loadStateFromServer();
+  updateUI();
+  showToast('All XP has been reset ☠️', 3000);
+}
+
+
+function logout() {
+  if (!confirm('Log out of TJ Academy?')) return;
+  clearSession();
+  document.getElementById('main-nav').style.display = 'none';
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  switchScreenRaw('auth');
+  setTimeout(() => document.getElementById('auth-password-input')?.focus(), 200);
 }
 
 async function enterApp(isParent) {
   document.getElementById('main-nav').style.display = 'flex';
   document.getElementById('nav-parent').style.display = isParent ? 'flex' : 'none';
+  document.getElementById('nav-logout').style.display = 'flex';
   await loadStateFromServer();
   if (isParent) switchScreen('parent');
   else switchScreen('home');
   loadTodayTasks();
   loadDailyVerse();
   updateUI();
+  updateGreeting();
 }
-function changePin(who) {
-  pinMode = `change_${who}`;
-  pinChangeStep = 0;
-  pinChangeNew = '';
-  pinBuffer = '';
-  updatePinDots();
-  document.getElementById('pin-sub-text').textContent = `Enter new ${who === 'tj' ? "TJ's" : 'Parent'} PIN`;
-  switchScreenRaw('pin');
+
+function changePin() {} // removed — password-only auth
+
+
+// ═══════════════════════════════════════════════════════
+// TOAST & ANIMATIONS
+// ═══════════════════════════════════════════════════════
+function showToast(msg, duration) {
+  let t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#1f2937;color:#e6edf3;padding:12px 20px;border-radius:12px;font-family:Nunito,sans-serif;font-weight:700;font-size:14px;z-index:9999;pointer-events:none;opacity:0;transition:opacity 0.3s;white-space:nowrap;max-width:90vw;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.4)';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, duration || 2500);
 }
+
+function floatXP(amount) {
+  const el = document.createElement('div');
+  const sign = amount > 0 ? '+' : '';
+  const color = amount > 0 ? '#4ade80' : '#ff7b72';
+  el.textContent = sign + amount + ' XP';
+  el.style.cssText = `position:fixed;top:40%;left:50%;transform:translateX(-50%);font-family:Bangers,cursive;font-size:32px;color:${color};text-shadow:0 0 20px ${color}66;z-index:9999;pointer-events:none;animation:floatUp 1.2s ease-out forwards`;
+  if (!document.querySelector('#float-xp-style')) {
+    const style = document.createElement('style');
+    style.id = 'float-xp-style';
+    style.textContent = '@keyframes floatUp{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-80px)}}';
+    document.head.appendChild(style);
+  }
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+}
+
 
 // ═══════════════════════════════════════════════════════
 // SCREENS
@@ -945,15 +1077,47 @@ function updateUI() {
   document.getElementById('home-xp-total').textContent = state.xp.total.toLocaleString();
   document.getElementById('home-grade-badge').textContent = gradeLabel;
   document.getElementById('learn-grade-label').textContent = `${gradeLabel} Subjects`;
-  document.getElementById('xp-edu').textContent = (state.xp.edu || 0).toLocaleString();
-  document.getElementById('xp-fit').textContent = (state.xp.fit || 0).toLocaleString();
-  document.getElementById('xp-chr').textContent = (state.xp.chr || 0).toLocaleString();
-  document.getElementById('xp-char').textContent = (state.xp.char || 0).toLocaleString();
-  document.getElementById('xp-social').textContent = (state.xp.social || 0).toLocaleString();
-  document.getElementById('xp-resp').textContent = (state.xp.resp || 0).toLocaleString();
-  document.getElementById('rewards-xp-total').textContent = state.xp.total.toLocaleString();
-  document.getElementById('fit-xp-today').textContent = (state.xp.fit || 0).toLocaleString();
-  document.getElementById('setting-grade').textContent = `${g}${suffix}`;
+
+  // Home XP grid — new layout
+  const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setEl('home-xp-edu',  (state.xp.edu  || 0).toLocaleString());
+  setEl('home-xp-fit',  (state.xp.fit  || 0).toLocaleString());
+  setEl('home-xp-chr',  (state.xp.chr  || 0).toLocaleString());
+  setEl('home-xp-resp', (state.xp.resp || 0).toLocaleString());
+  setEl('home-xp-today', (state.xpToday || 0).toLocaleString());
+
+  // Week XP — sum last 7 days from xpLog
+  const now = new Date();
+  let weekXP = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(now); d.setDate(d.getDate() - i);
+    const key = d.toLocaleDateString('en-CA');
+    weekXP += (state.xpLog || {})[key] || 0;
+  }
+  setEl('home-xp-week', weekXP.toLocaleString());
+
+  // Legacy IDs (kept for other screens)
+  setEl('xp-edu',    (state.xp.edu    || 0).toLocaleString());
+  setEl('xp-fit',    (state.xp.fit    || 0).toLocaleString());
+  setEl('xp-chr',    (state.xp.chr    || 0).toLocaleString());
+  setEl('xp-char',   (state.xp.char   || 0).toLocaleString());
+  setEl('xp-social', (state.xp.social || 0).toLocaleString());
+  setEl('xp-resp',   (state.xp.resp   || 0).toLocaleString());
+
+  setEl('rewards-xp-total', state.xp.total.toLocaleString());
+  setEl('fit-xp-today', (state.xp.fit || 0).toLocaleString());
+
+  // Grade display
+  const dg = state.settings.difficultyGrade || g;
+  const ds = dg === 1 ? 'st' : dg === 2 ? 'nd' : dg === 3 ? 'rd' : 'th';
+  setEl('setting-grade', `${dg}${ds}`);
+
+  // Grade advance month
+  const advSel = document.getElementById('setting-advance-month');
+  if (advSel) advSel.value = state.gradeAdvanceMonth || 9;
+
+  // Greeting
+  updateGreeting();
 
   // Unlock bar
   const goal = state.settings.dailyGoal || 500;
@@ -1022,9 +1186,10 @@ async function startSubjectQuiz(subjectId) {
       body: JSON.stringify({
         action: 'tj_quiz',
         subject: subjectId,
-        grade: state.gradeYear,
+        grade: state.settings.difficultyGrade || state.gradeYear,
         count: 10,
-        type: subj.type
+        type: subj.type,
+        difficulty: state.settings.difficultyGrade > state.gradeYear ? 'elevated' : 'standard'
       })
     });
     const raw = await res.json();
@@ -1077,12 +1242,15 @@ function renderQuestion() {
   if (isMath) {
     const field = document.getElementById('quiz-math-field');
     field.value = '';
+    field.disabled = false;
     setTimeout(() => field.focus(), 300);
   } else {
     const opts = document.getElementById('quiz-options');
-    opts.innerHTML = (q.options || []).map((opt, i) => `
-      <button class="quiz-opt" onclick="selectOption(${i}, this)">${String.fromCharCode(65+i)}. ${opt}</button>
-    `).join('');
+    opts.innerHTML = (q.options || []).map((opt, i) => {
+      // Strip existing A./B. prefix if AI already added it
+      const clean = String(opt).replace(/^[A-D][.)]\s*/i, '').trim();
+      return `<button class="quiz-opt" onclick="selectOption(${i}, this)">${String.fromCharCode(65+i)}. ${clean}</button>`;
+    }).join('');
     document.getElementById('quiz-submit-btn').style.display = 'none';
   }
 }
@@ -1152,10 +1320,11 @@ function nextQuestion() {
   }
 }
 
-function finishQuiz() {
+async function finishQuiz() {
   const total = quizData.questions.length;
   const xp = quizData.xpEarned;
-  addXP(xp, 'edu', quizData.subject.label);
+  const xpCat = quizData.subject.id === 'bible' ? 'chr' : 'edu';
+  await addXP(xp, xpCat, quizData.subject.label);
   document.getElementById('quiz-question-wrap').style.display = 'none';
   const complete = document.getElementById('quiz-complete');
   complete.style.display = 'block';
@@ -1196,7 +1365,7 @@ async function submitMemoryVerse() {
   const input = document.getElementById('memory-verse-input');
   const text = input.value.trim();
   if (!text || text.length < 10) { showToast('Type out the verse first!'); return; }
-  addXP(150, 'chr', 'Memory Verse');
+  await addXP(150, 'chr', 'Memory Verse');
   input.value = '';
   showToast('Memory verse submitted! +150 XP ✝️');
   logToN8n('memory_verse', { text: text.slice(0, 100) });
@@ -1229,12 +1398,12 @@ async function submitFitnessLog() {
     const data = await res.json();
     const xp = parseInt(data?.xp || data?.output?.xp || 75);
     const reply = data?.reply || data?.output?.reply || 'Activity logged!';
-    addXP(Math.max(0, xp), 'fit', 'custom activity');
+    await addXP(Math.max(0, xp), 'fit', 'custom activity');
     document.getElementById('fit-custom-text').value = '';
     showToast(`${reply} +${xp} XP`);
   } catch(e) {
     logToN8n('fitness_error', { error: e.message });
-    addXP(50, 'fit', 'custom activity');
+    await addXP(50, 'fit', 'custom activity');
     showToast('+50 XP! Keep it up 💪');
   }
 }
@@ -1300,16 +1469,26 @@ async function completeTask(idx) {
 // REWARDS
 // ═══════════════════════════════════════════════════════
 const REWARDS = [
-  { id: 'phone_30', icon: '📱', name: '30 min phone time', cost: 300 },
-  { id: 'game_60', icon: '🎮', name: '1 hour game time', cost: 500 },
-  { id: 'game_120', icon: '🕹️', name: '2 hours game time', cost: 900 },
-  { id: 'movie', icon: '🎬', name: 'Movie night pick', cost: 1500 },
-  { id: 'treat', icon: '🍕', name: 'Special food treat', cost: 800 },
+  { id: 'phone_30',      icon: '📱', name: '30 min phone time',               cost: 300 },
+  { id: 'game_60',       icon: '🎮', name: '1 hour game time',                cost: 500 },
+  { id: 'game_120',      icon: '🕹️', name: '2 hours game time',               cost: 900 },
+  { id: 'movie',         icon: '🎬', name: 'Movie night pick',                cost: 1500 },
+  { id: 'treat',         icon: '🍕', name: 'Special food treat',              cost: 800 },
+  { id: 'bedtime_1030',  icon: '🌙', name: '10:30 Bedtime',                   cost: 2000 },
+  { id: 'phone_weekend', icon: '📲', name: 'Full Weekend Phone & Gaming',     cost: 5000 },
+  { id: 'trip_state',    icon: '🚗', name: 'Weekend Trip (One State Away)',   cost: 15000 },
+  { id: 'trip_any',      icon: '✈️', name: 'Weekend Trip (Any State)',        cost: 25000 },
 ];
 
 function updateRewards() {
   const list = document.getElementById('rewards-list');
-  list.innerHTML = REWARDS.map(r => {
+  const allRewards = [
+    ...REWARDS,
+    ...(state.settings.customRewards || []).map(r => ({
+      id: r.id, name: r.name, cost: r.cost, icon: '🎁'
+    }))
+  ];
+  list.innerHTML = allRewards.map(r => {
     const canAfford = state.xp.total >= r.cost;
     return `<div class="reward-card">
       <div class="reward-card-header">
@@ -1342,12 +1521,14 @@ async function claimReward(id, cost, name) {
 // PENALTIES (Parent)
 // ═══════════════════════════════════════════════════════
 const PENALTIES = [
-  { label: 'Bad Behavior', xp: 100 },
-  { label: 'Missed Chore', xp: 75 },
-  { label: 'Late Bedtime', xp: 50 },
-  { label: 'Disrespectful', xp: 150 },
-  { label: 'Homework Skip', xp: 200 },
-  { label: 'Lying', xp: 250 },
+  { label: 'Bad Behavior',    xp: 300 },
+  { label: 'Missed Chore',    xp: 200 },
+  { label: 'Late Bedtime',    xp: 150 },
+  { label: 'Disrespectful',   xp: 400 },
+  { label: 'Homework Skip',   xp: 500 },
+  { label: 'Lying',           xp: 750 },
+  { label: 'Bad Attitude',    xp: 350 },
+  { label: 'Phone Misuse',    xp: 400 },
 ];
 
 function renderPenalties() {
@@ -1396,26 +1577,30 @@ renderSubjects();
 renderPenalties();
 updateUI();
 
-// On load — check server session, route to auth or PIN
+// Hide all screens — checkOnLoad decides
+document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
 (async function checkOnLoad() {
   if (!sessionToken) {
     switchScreenRaw('auth');
-    setTimeout(() => document.getElementById('auth-password-input')?.focus(), 400);
+    setTimeout(() => document.getElementById('auth-password-input')?.focus(), 200);
     return;
   }
   try {
-    const data = await fetch(API + '/api/tj/session', { headers: getAuthHeaders() }).then(r => r.json());
+    const res = await fetch(API + '/api/tj/session', { headers: getAuthHeaders() });
+    const data = await res.json();
     if (data.ok) {
       sessionIsParent = data.isParent;
-      switchScreenRaw('pin');
+      await enterApp(data.isParent);
     } else {
       clearSession();
       switchScreenRaw('auth');
-      setTimeout(() => document.getElementById('auth-password-input')?.focus(), 400);
+      setTimeout(() => document.getElementById('auth-password-input')?.focus(), 200);
     }
   } catch(e) {
-    // Server unreachable — show pin, enterApp will show error
-    switchScreenRaw('pin');
+    clearSession();
+    switchScreenRaw('auth');
+    setTimeout(() => document.getElementById('auth-password-input')?.focus(), 200);
   }
 })();
 </script>

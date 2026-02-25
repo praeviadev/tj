@@ -1,0 +1,22 @@
+{
+  "name": "benjamin-covenant-protocol",
+  "version": "1.0.0",
+  "description": "Production server for the Benjamin Covenant Protocol",
+  "main": "server.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "csv-parse": "^6.1.0",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "multer": "^2.0.2",
+    "mysql2": "^3.11.0",
+    "node-cron": "^4.2.1",
+    "socket.io": "^4.8.3"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
