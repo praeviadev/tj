@@ -8,7 +8,8 @@ const crypto  = require('crypto');
 const { getPool, migrateTJ } = require('./db');
 
 const PORT       = process.env.TJ_PORT || 3001;
-const TJ_PASSWORD = process.env.TJ_PASSWORD || 'warrior2025';
+const TJ_PASSWORD        = process.env.TJ_PASSWORD        || 'warrior2025';
+const TJ_PARENT_PASSWORD = process.env.TJ_PARENT_PASSWORD || 'parent2025';
 const TJ_SESSION_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 const app = express();
@@ -44,6 +45,24 @@ function notifyTelegram(message) {
     req.setTimeout(5000, () => req.destroy());
     req.write(body); req.end();
   } catch(e) { console.warn('[Telegram]', e.message); }
+}
+
+
+function notifyTodoistClose(taskId) {
+  const webhookUrl = process.env.TJ_TODOIST_CLOSE_WEBHOOK;
+  if (!webhookUrl || !taskId) return;
+  try {
+    const https = require('https');
+    const body  = JSON.stringify({ taskId });
+    const url   = new URL(webhookUrl);
+    const req   = https.request({
+      hostname: url.hostname, path: url.pathname + url.search,
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
+    }, () => {});
+    req.on('error', e => console.warn('[Todoist close]', e.message));
+    req.setTimeout(5000, () => req.destroy());
+    req.write(body); req.end();
+  } catch(e) { console.warn('[Todoist close]', e.message); }
 }
 
 // ── Session middleware ─────────────────────────────────────────────────────
@@ -228,13 +247,14 @@ app.post('/api/tj/task/complete', tjRequireSession, async (req, res) => {
     state.completedToday.push(id);
     const award        = parseInt(xp) || 50;
     state.xp.total    += award;
-    state.xp.char      = (state.xp.char || 0) + award;
+    state.xp.resp      = (state.xp.resp || 0) + award;
     state.xpToday     += award;
     const today        = state.todayDate;
     if (!state.xpLog) state.xpLog = {};
     state.xpLog[today] = (state.xpLog[today] || 0) + award;
     await tjSaveState(state);
     await tjLogEvent('task_complete', { taskId: id, taskTitle, xp: award });
+    notifyTodoistClose(taskId);
     if (process.env.TELEGRAM_N8N_WEBHOOK) {
       notifyTelegram(`✅ TJ completed: ${taskTitle} (+${award} XP)\nToday: ${state.xpToday} XP`);
     }
@@ -273,7 +293,7 @@ app.post('/api/tj/reward/claim', tjRequireSession, async (req, res) => {
 app.post('/api/tj/settings', tjRequireSession, async (req, res) => {
   try {
     if (!req.tjSession.is_parent) return res.status(403).json({ ok: false, error: 'parent_only' });
-    const allowed = ['dailyGoal','xpPerMin','todoistProjectId','tjPin','parentPin'];
+    const allowed = ['dailyGoal','xpPerMin','todoistProjectId','tjPin','parentPin','oracleHook','todoistHook','logHook'];
     let state = await tjLoadState();
     for (const key of allowed) {
       if (req.body[key] !== undefined) state.settings[key] = req.body[key];
@@ -328,6 +348,34 @@ app.post('/api/tj/log', async (req, res) => {
     res.json({ ok: true });
   } catch(e) {
     res.status(500).json({ ok: false });
+  }
+});
+
+
+// POST /api/tj/login — single password login, issues session token directly
+app.post('/api/tj/login', async (req, res) => {
+  try {
+    const { password } = req.body || {};
+    if (!password) return res.status(400).json({ ok: false, error: 'no_password' });
+    let isParent = false;
+    if      (password === TJ_PASSWORD)        isParent = false;
+    else if (password === TJ_PARENT_PASSWORD) isParent = true;
+    else return res.status(401).json({ ok: false, error: 'wrong_password' });
+    const token = tjToken();
+    const now   = Date.now();
+    await dbPool.query('DELETE FROM tj_sessions WHERE expires_at < ?', [now]);
+    await dbPool.query(
+      'INSERT INTO tj_sessions (token,is_parent,created_at,expires_at) VALUES (?,?,?,?)',
+      [token, isParent ? 1 : 0, now, now + TJ_SESSION_TTL]
+    );
+    await tjLogEvent('login', { isParent, ts: now });
+    if (process.env.TELEGRAM_N8N_WEBHOOK) {
+      notifyTelegram(isParent ? '🔐 Parent logged into TJ Academy' : '⚔️ TJ logged into TJ Academy');
+    }
+    return res.json({ ok: true, token, isParent, expiresAt: now + TJ_SESSION_TTL });
+  } catch(e) {
+    console.error('[tj/login]', e.message);
+    return res.status(500).json({ ok: false, error: e.message });
   }
 });
 
